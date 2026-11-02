@@ -22,7 +22,12 @@ An isolated `gradlew.bat runClient -x downloadAssets` session loaded Minecraft 2
 
 Computer interaction was stopped by the user with Escape. Theme switching, blur appearance, HUD dragging, a world session and individual Glazed modules have **not** been visually/gameplay verified. Development-mode Realms authentication errors were expected because no real account token was used. This is a startup smoke test, not a complete runtime pass.
 
-The initial GitHub Actions Windows build and wrapper validation passed. The initial Linux job found the line-ending issue described below. A new cross-platform run will verify the corrected sources; use the repository's Actions page for the authoritative status of each commit.
+The corrected release commit `95196e3b0b003598cfea6d4993a327d1aec10386` passed **both Windows and Linux builds**, including official Gradle wrapper validation and JAR artifact uploads. The release job also succeeded and published **Meteor Purple Edition v1.0.0** as a prerelease with binary and source JARs.
+
+- [Successful cross-platform build and release run](https://github.com/davyduao-hue/Meteor-Purple-Edition/actions/runs/41515309990)
+- [Published prerelease](https://github.com/davyduao-hue/Meteor-Purple-Edition/releases/tag/v1.0.0)
+
+The initial Linux run's line-ending failure is retained in the repository history; the corrected run above is the release evidence. Later documentation and distribution-notice changes do not imply additional gameplay testing.
 
 ## Unimplemented specification items
 
