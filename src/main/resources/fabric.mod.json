@@ -8,12 +8,13 @@
   "license": "GPL-3.0-only",
   "environment": "client",
   "entrypoints": { "meteor": ["dev.meteorpurple.PurpleAddon"] },
+  "mixins": ["purple.mixins.json"],
   "custom": { "meteor-client:color": "180,160,255" },
   "depends": {
     "minecraft": "26.2",
     "java": ">=25",
     "fabricloader": ">=0.19.3",
-    "meteor-client": "~26.2",
+    "meteor-client": ">=26.2-0 <26.3",
     "catppuccin-addon": "*"
   },
   "suggests": { "opsec": "*", "glazed": "*" }

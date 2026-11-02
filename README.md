@@ -24,10 +24,10 @@ Open Meteor with **Right Shift**. Open **Purple → Purple Appearance** settings
 | Profile | Behavior |
 | --- | --- |
 | Catppuccin Mocha | Actual Catppuccin Mocha palette, lavender accent, rounded panels, soft shadows and configurable animations. |
-| Purple Glass | Translucent Catppuccin panels and a purple gradient HUD background. This version does **not** implement a frosted framebuffer blur. |
+| Purple Glass | Purple-tinted translucent Catppuccin panels, an adjustable native framebuffer blur and a purple gradient HUD background. |
 | Minimal Lavender | Compact scale, small corners, opaque default panels, no shadows and effectively immediate animations. |
 
-GUI scale, panel opacity and animation duration are configurable. Performance mode disables shadows and animations and forces opaque GUI panels. The actual Catppuccin settings remain available in Meteor's GUI tab. Applying a Purple preset intentionally changes only its listed visual settings; it does not reset module configuration.
+GUI scale, panel opacity, Glass blur radius and animation duration are configurable. Performance mode bypasses blur, disables shadows and animations, and forces opaque GUI/HUD panels. Blur uses Minecraft's own render state and does not change saved video options. The actual Catppuccin settings remain available in Meteor's GUI tab. Applying a Purple preset intentionally changes only its listed visual settings; it does not reset module configuration.
 
 The real Catppuccin ClickGUI provides rounded, movable category windows, animated controls, searchable module settings, descriptions, sliders, color pickers, keybind editing, tooltips, scrolling and category snapping. Modules installed by other Meteor addons use the same Meteor settings widgets automatically. Purple Edition does not clone or replace these modules.
 
@@ -58,14 +58,15 @@ build/libs/meteor-purple-edition-1.0.0.jar
 build/libs/meteor-purple-edition-1.0.0-sources.jar
 ```
 
-GitHub Actions validates the wrapper and builds on both Windows and Linux with Java 25. Each successful run exposes downloadable JAR artifacts. Version tags, or the explicit publish input of the manual workflow, publish a **prerelease** with the compiled JAR and source JAR. This remains a prerelease until runtime and combined-addon compatibility have been verified.
+GitHub Actions validates the wrapper and builds on both Windows and Linux with Java 25. Each successful run exposes downloadable JAR artifacts. Version tags, the explicit publish input of the manual workflow, or an intentionally marked `[release]` commit on main publish a **prerelease** with the compiled JAR and source JAR. This remains a prerelease until runtime and combined-addon compatibility have been verified.
 
 ## Compatibility and limitations
 
 - Target is exactly **26.2**. Do not mix with 1.21.11, 26.1.2 or 26.3 binaries.
 - The three selections are coordinated presets of the real Catppuccin theme, selectable under Purple Appearance; they are not three independent entries in Meteor's native theme dropdown.
-- Purple Glass has transparency and HUD gradients, **not adjustable frosted-glass blur** or a custom blur shader. No performance claims or benchmark results are asserted.
+- Purple Glass uses Minecraft's full-screen background blur behind the GUI; it does not use a separate per-panel blur shader. No performance claims or benchmark results are asserted.
 - Glazed is an independently installed official binary. Its 26.2 release exists, but combined runtime behavior and all Glazed features require an actual in-game test. No Glazed source is included.
+- **Known upstream conflict:** Glazed 26.2-n-17.2 bundles ExploitPreventer 1.1.0; OpSec 1.1.7.1 declares a conflict with ExploitPreventer. Fabric warns about this combination. Do not treat the complete optional-mod set as a validated conflict-free modpack. Removing or rewriting Glazed's bundled dependency is outside its redistribution license.
 - OpSec's complete settings retain their upstream screen design; the status and notification controls are embedded in the themed Meteor module screen.
 - Existing Meteor HUDs are preserved. The added armor panel is textual durability/status, not a replacement for Meteor's armor icon HUD.
 - No screenshots are included unless captured from an actual running client. Build and runtime validation results are recorded in `VALIDATION.md`.

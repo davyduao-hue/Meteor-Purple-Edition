@@ -127,7 +127,9 @@ public final class PurpleHud extends HudElement {
         Appearance appearance = Modules.get().get(Appearance.class);
         Color accent = synchronize.get() ? appearance.accent() : customAccent.get();
         Color base = synchronize.get() ? appearance.background() : customBackground.get();
-        bg.set(base.r, base.g, base.b, (int) (255 * opacity.get()));
+        int alpha = appearance.performance.get() ? 255 : (int) (255 * opacity.get());
+        bg.set(base.r, base.g, base.b, alpha);
+        GLASS_END.set(55, 28, 88, alpha);
         if (background.get()) {
             if (appearance.style.get() == Appearance.Style.Glass && !appearance.performance.get()) {
                 renderer.quad(x, y, getWidth(), getHeight(), bg, bg, GLASS_END, GLASS_END);

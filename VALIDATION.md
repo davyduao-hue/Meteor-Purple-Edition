@@ -18,8 +18,16 @@ The build has no unit-test suite. A successful compilation does not demonstrate 
 
 ## Runtime and CI
 
-Runtime launch and GitHub Actions verification are in progress. Do not interpret this document as a runtime pass until this section is updated with an observed result.
+An isolated `gradlew.bat runClient -x downloadAssets` session loaded Minecraft 26.2 and all five requested mods: Meteor 26.2-35, Catppuccin's 26.2 binary, Purple Edition, OpSec 1.1.7.1 and Glazed 26.2-n-17.2. The official non-audio English UI assets were downloaded and SHA-1 verified separately; sound files were intentionally incomplete for this UI smoke test. Meteor and Catppuccin initialized, resource atlases loaded, and the actual Minecraft/Glazed title screen with the installed addon credits was observed.
+
+Computer interaction was stopped by the user with Escape. Theme switching, blur appearance, HUD dragging, a world session and individual Glazed modules have **not** been visually/gameplay verified. Development-mode Realms authentication errors were expected because no real account token was used. This is a startup smoke test, not a complete runtime pass.
+
+The initial GitHub Actions Windows build and wrapper validation passed. The initial Linux job found the line-ending issue described below. A new cross-platform run will verify the corrected sources; use the repository's Actions page for the authoritative status of each commit.
 
 ## Unimplemented specification items
 
-Adjustable frosted-glass blur, three independently registered native Meteor themes, a separately reimplemented ClickGUI, benchmark-backed performance claims, and a modified Glazed/OpSec fork are not claimed. Existing Catppuccin supplies the real ClickGUI. Optional mods preserve their upstream behavior and are installed separately.
+Three independently registered native Meteor themes, a separately reimplemented ClickGUI, benchmark-backed performance claims, and a modified Glazed/OpSec fork are not claimed. Existing Catppuccin supplies the real ClickGUI. Purple Glass now implements adjustable native background blur through Minecraft's per-frame render state. Optional mods preserve their upstream behavior and are installed separately.
+
+The first combined runtime attempt exposed and led to a fix for a Fabric version constraint rejecting Meteor's real `26.2-35` version. The first Linux CI run exposed CRLF line endings in `gradlew`; the file was normalized and `.gitattributes` added. Both issues would not be caught by Java compilation alone.
+
+Fabric's combined-mod resolution reports that Glazed bundles ExploitPreventer 1.1.0, which conflicts with OpSec 1.1.7.1. This is a real upstream warning and remains a compatibility limitation; no nested third-party binary was removed or modified.

@@ -28,6 +28,9 @@ public final class Appearance extends Module {
     public final Setting<Boolean> performance = general.add(new BoolSetting.Builder()
         .name("performance-mode").description("Disable shadows and animations and use opaque panels.")
         .defaultValue(false).onChanged(v -> pending = true).build());
+    public final Setting<Integer> blurRadius = general.add(new IntSetting.Builder()
+        .name("glass-blur-radius").description("Minecraft framebuffer blur radius. Zero disables it; performance mode bypasses blur.")
+        .defaultValue(6).range(0, 10).sliderRange(0, 10).visible(() -> style.get() == Style.Glass).build());
     private final Setting<Double> scale = general.add(new DoubleSetting.Builder()
         .name("gui-scale").description("Scale of the real Catppuccin widgets.")
         .defaultValue(1).range(.75, 4).sliderRange(.75, 3).onSliderRelease().onChanged(v -> pending = true).build());
@@ -77,6 +80,7 @@ public final class Appearance extends Module {
     }
 
     public Color accent() { return style.get() == Style.Glass ? GLASS_ACCENT : LAVENDER; }
+    public boolean glassBlurEnabled() { return style.get() == Style.Glass && !performance.get() && blurRadius.get() > 0; }
     public Color background() { return style.get() == Style.Glass ? GLASS_BASE : MOCHA_BASE; }
     private static final Color LAVENDER = new Color(180, 190, 254);
     private static final Color GLASS_ACCENT = new Color(203, 166, 247);

@@ -23,6 +23,10 @@ public final class Privacy extends Module {
         boolean installed = FabricLoader.getInstance().isModLoaded("opsec");
         list.add(theme.label(installed ? "OpSec installed — official protection engine" : "OpSec absent — install the official 26.2 release"));
         if (!installed) return list;
+        if (FabricLoader.getInstance().isModLoaded("exploitpreventer")) {
+            list.add(theme.label("Upstream warning: ExploitPreventer conflicts with this OpSec release."));
+            list.add(theme.label("Glazed may bundle it. No protections were changed by Purple Edition."));
+        }
         try {
             Object config = config();
             addStatus(list, theme, config, "shouldBlockLocalPackUrls", "Block local pack URLs");
