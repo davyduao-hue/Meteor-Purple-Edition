@@ -1,83 +1,103 @@
-# Meteor Purple Edition
+# Meteor Purple Edition 1.1
 
-A Minecraft **26.2 / Fabric / Java 25** addon for the real Meteor Client and Catppuccin addon. It adds three live appearance profiles, nine independent purple HUD elements, and a defensive integration with the official OpSec configuration API.
+**One JAR. Meteor + Catppuccin + Fabric API included.** A coordinated Minecraft **26.2** client setup with ten themes, a custom home screen, a searchable unified client UI and a configurable HUD. This is an independent GPL-3.0 project, not an official upstream release.
 
-This is an independent addon, not an official Meteor, Catppuccin, Glazed, or OpSec release. Upstream mods remain separate and retain their modules, commands, keybinds, profiles and configuration files.
+![OS26 unified hub with separately installed official Glazed](docs/screenshots/hub-os26.png)
 
-## Installation
+## Install
 
-1. Install Minecraft **26.2**, **Java 25**, and Fabric Loader **0.19.3 or later**.
-2. Install the following official mods in the same instance's `mods` directory:
-   - [Meteor Client](https://meteorclient.com/) **26.2**, using the official 26.2 build, not a 26.3 build. The build is compiled against official Maven snapshot `26.2-20261009.074120-35`.
-   - [Fabric API](https://modrinth.com/mod/fabric-api) **0.154.2+26.2**.
-   - [Catppuccin Addon 2.4.0 for 26.2](https://github.com/X-C-0/catppuccin-addon/releases/tag/v2.4.0): `catppuccin-addon-2.4.0+mc26.2.jar`.
-3. Add `meteor-purple-edition-1.0.0.jar` from this project's [Releases](https://github.com/davyduao-hue/Meteor-Purple-Edition/releases) or a successful [Actions build](https://github.com/davyduao-hue/Meteor-Purple-Edition/actions).
-4. Optional: install [official OpSec](https://www.curseforge.com/minecraft/mc-mods/opsec), `opsec-26.2+v1.1.7.1.jar`, from [aurickk/OpSec](https://github.com/aurickk/OpSec/releases/tag/V1.1.7.1).
-5. Optional: install [official Glazed v17.2](https://github.com/realnnpg/glazed/releases/tag/v17.2), choosing **`glazed-26.2-n-17.2.jar`**, together with the dependencies declared by that official build (including its matching Baritone and Fabric API). Glazed is not bundled, modified, or redistributed here. Its license prohibits redistribution.
+1. Install **Minecraft 26.2**, **Java 25** and **Fabric Loader 0.19.3 or later**.
+2. Download **`meteor-purple-edition-1.1.0.jar`** from [Releases](https://github.com/davyduao-hue/Meteor-Purple-Edition/releases/tag/v1.1.0).
+3. Put that JAR in your instance's `mods` directory. Meteor **26.2-35**, Catppuccin **2.4.0+mc26.2** and Fabric API **0.154.2+26.2** are inside it. Remove the older Purple Edition JAR and separate copies of these included mods to keep the installation unambiguous.
+4. Launch Fabric. Use **Client hub** on the new home screen, or press **Right Shift**.
 
-Do not install duplicate Meteor or Catppuccin versions. No third-party binaries are nested in the Purple Edition JAR.
+Existing Meteor settings and profiles remain in their normal configuration files. The original three preset identifiers are retained for upgrades. New installations default to OS26 Glass; existing installations retain their saved theme selection.
 
-## Appearance and controls
+## A home for the client
 
-Open Meteor with **Right Shift**. Open **Purple → Purple Appearance** settings (right-click its module). Choose a theme; settings apply even when this control module is toggled off. Click **Apply appearance now** to reapply the preset. Meteor stores these settings in its normal module/profile configuration.
+The custom menu provides Singleplayer, Multiplayer, Client hub, Themes, Minecraft options and Quit. It follows the selected palette, with smooth Comfortaa typography, rounded surfaces, subtle highlight transitions and a static gradient background. Keyboard navigation and button narration use Minecraft's native button behavior.
 
-| Profile | Behavior |
+![Actual custom home screen](docs/screenshots/home-os26.png)
+
+Disable **Custom Main Menu** under Purple Appearance to restore Minecraft's title screen. This setting is independent of the Classic/Unified client UI choice.
+
+## Unified or Classic UI
+
+**Unified** brings module search, categories, active-module filtering, inline toggles, descriptions, settings and keybind editing into one window. Select a module to edit it alongside the module list. Color pickers, sliders, conditional settings and custom addon widgets use the actual Meteor/Catppuccin APIs. Search covers names, descriptions, categories and addon names.
+
+The toolbar opens the theme gallery, HUD editor, appearance settings and optional privacy controls. **More Meteor settings** preserves access to Meteor's normal tabs, including profiles, macros, friends and configuration. The full original module screen is still available for every module.
+
+**Classic** restores movable category windows. Choose it in Purple Appearance's **Client UI** setting, or press the Classic UI button in the hub. Choose **Original Meteor** as the theme to use Meteor's original theme widgets. Neither option requires restarting the game.
+
+## Ten live themes
+
+![Actual in-game theme gallery](docs/screenshots/theme-gallery.png)
+
+| Theme | Appearance |
 | --- | --- |
-| Catppuccin Mocha | Actual Catppuccin Mocha palette, lavender accent, rounded panels, soft shadows and configurable animations. |
-| Purple Glass | Purple-tinted translucent Catppuccin panels, an adjustable native framebuffer blur and a purple gradient HUD background. |
-| Minimal Lavender | Compact scale, small corners, opaque default panels, no shadows and effectively immediate animations. |
+| OS26 Glass | Pearl and lilac surfaces, rounded floating panels, native background blur and gentle highlights. An OS26-inspired interpretation, not a pixel-identical replica. |
+| Catppuccin Mocha | Improved charcoal/lavender palette, softer shadows and restrained transitions. |
+| Purple Glass | Plum-tinted translucent panels, purple highlights and native background blur. |
+| Minimal Lavender | Compact layout, small corners, immediate transitions and reduced effects. |
+| Midnight | Deep indigo with electric violet. |
+| Rose Quartz | Warm plum and soft rose. |
+| Ocean | Deep navy and glacial blue. |
+| Forest | Evergreen and mint. |
+| AMOLED Violet | Black surfaces, violet accents and no shadows. |
+| Original Meteor | Original Meteor theme and palette. |
 
-GUI scale, panel opacity, Glass blur radius and animation duration are configurable. Performance mode bypasses blur, disables shadows and animations, and forces opaque GUI/HUD panels. Blur uses Minecraft's own render state and does not change saved video options. The actual Catppuccin settings remain available in Meteor's GUI tab. Applying a Purple preset intentionally changes only its listed visual settings; it does not reset module configuration.
+All presets synchronize the custom menu and Purple HUD. Scale, opacity, animation duration and glass blur radius are configurable. Glass uses Minecraft's existing full-screen background blur, not a separate blur pass for each panel. The presets extend the real Catppuccin addon, which remains included and credited.
 
-The real Catppuccin ClickGUI provides rounded, movable category windows, animated controls, searchable module settings, descriptions, sliders, color pickers, keybind editing, tooltips, scrolling and category snapping. Modules installed by other Meteor addons use the same Meteor settings widgets automatically. Purple Edition does not clone or replace these modules.
+## Performance work
+
+- HUD text measurements and element bounds are cached between data refreshes, instead of being recalculated every frame. Palette colors and rounded-corner geometry are also cached.
+- Normal HUD data refreshes at 4 Hz; Performance mode reduces it to 2 Hz, bypasses blur and shadows, removes transitions, makes panels opaque and avoids gradient HUD drawing.
+- Adaptive blur samples FPS once per second, suspends blur below 45 FPS and restores it at 60 FPS. The different thresholds prevent rapid switching around one boundary.
+- Module search is computed when filters change; module lists are paged in groups of 32. Active-module events update visible toggles without rebuilding the entire UI.
+- Reduced Motion disables transitions while retaining the chosen palette and transparency.
+
+These changes reduce work done by Purple Edition's UI/HUD. They are not a claim of a measured gameplay FPS increase or a replacement for a general rendering optimizer.
 
 ## HUD
 
-Click **Add missing Purple HUD elements**, then arrange them using Meteor's normal **HUD editor**. The action preserves existing elements and adds only missing Purple elements; it enables the HUD.
+Use **Add HUD**, then **HUD editor**. Existing elements are preserved; adding the layout again does not create duplicate Purple elements. Nine movable panels provide watermark, FPS, latency, coordinates, active modules, armor durability, potion timers, memory usage and server name. Each supports scaling, opacity, custom colors and theme synchronization. The initial layout wraps into a second column when space permits.
 
-Nine independently movable panels provide watermark, FPS, latency, coordinates, active modules, armor durability, potion timers, memory usage and server name. Each has its own scale, background, opacity, theme synchronization and color picker. Text data is refreshed at 4 Hz and list sizes are bounded. Theme colors update immediately while rendering; performance mode avoids gradient HUD drawing.
+## Glazed and OpSec
 
-## OpSec integration
+[Official Glazed v17.2](https://github.com/realnnpg/glazed/releases/tag/v17.2) can be installed separately using **`glazed-26.2-n-17.2.jar`**. The unified UI discovers its modules automatically. An isolated runtime test loaded **249 modules with Glazed**, compared with **169 in the base bundle**, and rendered every theme. This does not establish that every Glazed feature works on every server. Install any additional dependencies required by the specific Glazed features you use.
 
-**Purple → Purple Privacy** shows selected protection status, opens the complete official OpSec settings screen, and provides chat-alert/toast controls which save through OpSec's configuration manager. The adapter is optional and reports an unavailable API rather than crashing if a future OpSec version changes it. It never reads account/session tokens or changes protection defaults. OpSec remains the protection engine; this project does not claim to be an enhanced OpSec fork.
+Glazed is **not bundled**: its [All Rights Reserved license](https://github.com/realnnpg/glazed/blob/1.21.11/LICENSE) prohibits redistribution and incorporation into distributed software. No Glazed code or binary is copied into this project or its releases.
 
-## Build
+[Original OpSec](https://www.curseforge.com/minecraft/mc-mods/opsec) is an optional separate installation (`opsec-26.2+v1.1.7.1.jar`). The Privacy panel reports selected protection status, opens the full official settings screen and saves notification changes through OpSec's own configuration manager. It does not replace the protection engine or access saved account tokens.
 
-Install a Java 25 JDK. From the repository root on Windows:
+**Known upstream conflict:** Glazed bundles ExploitPreventer 1.1.0, which OpSec 1.1.7.1 explicitly marks as conflicting. The Glazed runtime test for this release omitted OpSec. Purple Edition reports the conflict when both are present and does not silently remove either mod or disable protections.
+
+## Build and verification
+
+With a Java 25 JDK, run:
 
 ```bat
 gradlew.bat build
 ```
 
-Linux/macOS: `bash ./gradlew build`. Gradle 9.7.1 is bootstrapped by the included official wrapper, with a pinned distribution SHA-256. Fabric Loom **1.17.11** uses the unobfuscated Minecraft 26.2 classes; no Yarn mappings are declared. Dependencies use official Fabric, Meteor, Maven Central and Modrinth repositories. A network connection is needed for the first build.
+Linux/macOS: `bash ./gradlew build`. The included checksum-pinned Gradle 9.7.1 wrapper uses Fabric Loom 1.17.11 and the unobfuscated Minecraft 26.2 APIs. No Minecraft game files are redistributed.
 
-Outputs:
+Outputs under `build/libs/`:
 
 ```text
-build/libs/meteor-purple-edition-1.0.0.jar
-build/libs/meteor-purple-edition-1.0.0-sources.jar
+meteor-purple-edition-1.1.0.jar
+meteor-purple-edition-1.1.0-sources.jar
+meteor-purple-edition-1.1.0-corresponding-sources.zip
 ```
 
-GitHub Actions validates the wrapper and builds on both Windows and Linux with Java 25. Each successful run exposes downloadable JAR artifacts. Version tags, the explicit publish input of the manual workflow, or an intentionally marked `[release]` commit on main publish a **prerelease** with the compiled JAR and source JAR. This remains a prerelease until runtime and combined-addon compatibility have been verified.
+The corresponding-source ZIP contains Purple Edition's complete source/build files and the exact Meteor/Catppuccin source archives, including upstream build scripts and assets. Their SHA-256 hashes are checked during the build. See [THIRD_PARTY.md](THIRD_PARTY.md) for revisions and licenses.
 
-## Compatibility and limitations
+`scripts/verify_bundle.py` verifies the actual nested mod IDs/versions. JUnit checks body-text contrast across all palettes. GitHub Actions validates the wrapper, runs the build/tests on Windows and Linux, verifies the bundle, uploads artifacts and publishes marked releases with corresponding sources.
 
-- Target is exactly **26.2**. Do not mix with 1.21.11, 26.1.2 or 26.3 binaries.
-- The three selections are coordinated presets of the real Catppuccin theme, selectable under Purple Appearance; they are not three independent entries in Meteor's native theme dropdown.
-- Purple Glass uses Minecraft's full-screen background blur behind the GUI; it does not use a separate per-panel blur shader. No performance claims or benchmark results are asserted.
-- Glazed is an independently installed official binary. Its 26.2 release exists, but combined runtime behavior and all Glazed features require an actual in-game test. No Glazed source is included.
-- **Known upstream conflict:** Glazed 26.2-n-17.2 bundles ExploitPreventer 1.1.0; OpSec 1.1.7.1 declares a conflict with ExploitPreventer. Fabric warns about this combination. Do not treat the complete optional-mod set as a validated conflict-free modpack. Removing or rewriting Glazed's bundled dependency is outside its redistribution license.
-- OpSec's complete settings retain their upstream screen design; the status and notification controls are embedded in the themed Meteor module screen.
-- Existing Meteor HUDs are preserved. The added armor panel is textual durability/status, not a replacement for Meteor's armor icon HUD.
-- No screenshots are included unless captured from an actual running client. Build and runtime validation results are recorded in `VALIDATION.md`.
+An isolated game test is provided in `qa/bundle-smoke`. Build the main project first, then run `..\..\gradlew.bat runClient -x downloadAssets` from that directory (Linux: `bash ../../gradlew runClient -x downloadAssets`). It opens a separate development client, cycles all themes, checks search and menu/UI routing, captures actual render frames and exits. A complete Minecraft asset cache is needed; omit `-x downloadAssets` to download it. The test uses no real account token. See [VALIDATION.md](VALIDATION.md) for observed results and their limits.
 
-## Credits and license
+## Credits and limitations
 
-- [MeteorDevelopment/meteor-client](https://github.com/MeteorDevelopment/meteor-client) — framework, module system, GUI and HUD APIs; GPL-3.0.
-- [X-C-0/catppuccin-addon](https://github.com/X-C-0/catppuccin-addon) — actual theme, rounded renderer and widgets; GPL-3.0.
-- [Catppuccin](https://catppuccin.com/) — palette.
-- [aurickk/OpSec](https://github.com/aurickk/OpSec) — official privacy mod; GPL-3.0. [CurseForge project 1519411](https://www.curseforge.com/minecraft/mc-mods/opsec).
-- [realnnpg/glazed](https://github.com/realnnpg/glazed) — optional independent addon; **All Rights Reserved**. Follow its [license](https://github.com/realnnpg/glazed/blob/main/LICENSE); no redistribution permission is implied.
-- [Fabric](https://fabricmc.net/) and [Gradle](https://gradle.org/) — loader and build tooling. Wrapper files are distributed by Gradle under Apache-2.0.
+[Meteor Development](https://github.com/MeteorDevelopment/meteor-client) supplies the framework; [Pindour / X-C-0](https://github.com/X-C-0/catppuccin-addon) supplies the real Catppuccin theme and rounded widget renderer. [Catppuccin](https://catppuccin.com/) supplies the original Mocha palette. [Fabric](https://fabricmc.net/), Gradle and the Comfortaa font project are credited in THIRD_PARTY.md.
 
-Purple Edition's own source is GPL-3.0-only; see `LICENSE`. Upstream binaries and assets retain their respective licenses and are not part of the distributable.
+The release targets exactly **Minecraft 26.2**. It remains a prerelease: UI/bundle rendering has been tested, but live multiplayer, every upstream module, controller/accessibility behavior and performance on other GPUs have not been certified. The three-dimensional world and underlying Meteor/Glazed module behavior remain upstream functionality. Purple Edition's source is GPL-3.0-only; bundled components retain their own licenses.

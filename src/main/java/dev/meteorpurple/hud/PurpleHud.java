@@ -31,12 +31,14 @@ public final class PurpleHud extends HudElement {
     }
 
     public static void installLayout() {
-        int row = 12;
+        int row = 12,column=12;
         for (Kind kind : Kind.values()) {
+            int estimated=switch(kind) { case Modules,Effects -> 200; case Armor -> 110; default -> 34; };
+            if(row+estimated>mc.getWindow().getHeight()-24 && column+620<mc.getWindow().getWidth()) { column+=310; row=12; }
             boolean exists = false;
             for (HudElement element : Hud.get()) if (element.info == info(kind)) { exists = true; break; }
-            if (!exists) Hud.get().add(info(kind), 12, row);
-            row += switch (kind) { case Modules -> 210; case Armor -> 130; case Effects -> 130; default -> 34; };
+            if (!exists) Hud.get().add(info(kind), column, row);
+            row += estimated;
         }
         Hud.get().active = true;
     }
@@ -44,6 +46,8 @@ public final class PurpleHud extends HudElement {
     private final Kind kind;
     private final ArrayList<String> lines = new ArrayList<>();
     private int refresh;
+    private boolean measurementDirty=true;
+    private double measuredScale=-1,lineHeight;
     private final Color bg = new Color(30, 30, 46, 210);
     private final SettingGroup general = settings.getDefaultGroup();
     private final Setting<Double> scale = general.add(new DoubleSetting.Builder().name("scale")
@@ -67,11 +71,12 @@ public final class PurpleHud extends HudElement {
 
     @Override public void tick(HudRenderer renderer) {
         if (refresh-- > 0) return;
-        refresh = 4; // refresh text at 4 Hz, never allocate the data model per frame
+        refresh = Appearance.get().performance.get() ? 9:4;
         updateLines();
     }
 
     private void updateLines() {
+        measurementDirty=true;
         lines.clear();
         switch (kind) {
             case Watermark -> lines.add("METEOR / PURPLE EDITION");
@@ -120,27 +125,31 @@ public final class PurpleHud extends HudElement {
 
     @Override public void render(HudRenderer renderer) {
         if (lines.isEmpty()) updateLines();
-        double lineHeight = renderer.textHeight(false, scale.get()) + 3;
-        double width = 0;
-        for (String line : lines) width = Math.max(width, renderer.textWidth(line, false, scale.get()));
-        setSize(width + 18, lines.size() * lineHeight + 12);
-        Appearance appearance = Modules.get().get(Appearance.class);
+        if(measurementDirty || measuredScale!=scale.get()) {
+            measuredScale=scale.get(); lineHeight=renderer.textHeight(false,measuredScale)+3;
+            double width=0;
+            for(String line:lines) width=Math.max(width,renderer.textWidth(line,false,measuredScale));
+            setSize(width+18,lines.size()*lineHeight+12); measurementDirty=false;
+        }
+        Appearance appearance = Appearance.get();
         Color accent = synchronize.get() ? appearance.accent() : customAccent.get();
         Color base = synchronize.get() ? appearance.background() : customBackground.get();
         int alpha = appearance.performance.get() ? 255 : (int) (255 * opacity.get());
         bg.set(base.r, base.g, base.b, alpha);
-        GLASS_END.set(55, 28, 88, alpha);
+        Color end=appearance.palette().surface1;
+        GLASS_END.set(end.r,end.g,end.b,alpha);
         if (background.get()) {
-            if (appearance.style.get() == Appearance.Style.Glass && !appearance.performance.get()) {
+            if (appearance.style.get().glass && !appearance.performance.get()) {
                 renderer.quad(x, y, getWidth(), getHeight(), bg, bg, GLASS_END, GLASS_END);
             } else renderer.quad(x, y, getWidth(), getHeight(), bg);
             renderer.quad(x, y, 2, getHeight(), accent);
         }
         double rowY = y + 6;
         for (String line : lines) {
-            renderer.text(line, x + 9, rowY, accent, false, scale.get());
+            renderer.text(line,x+9,rowY,synchronize.get() && kind!=Kind.Watermark ? appearance.palette().text:accent,false,measuredScale);
             rowY += lineHeight;
         }
     }
     private final Color GLASS_END = new Color(55, 28, 88, 150);
+    @Override public void onFontChanged() { measurementDirty=true; }
 }

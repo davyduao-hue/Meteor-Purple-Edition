@@ -1,4 +1,32 @@
-# Validation evidence
+# Validation evidence — 1.1.0
+
+Verified on 2 November 2026 with Java 25, Gradle 9.7.1, Fabric Loom 1.17.11 and Minecraft 26.2.
+
+## Build and package checks
+
+- `gradlew.bat build --console=plain` passes locally, including the JUnit contrast test for body text against base and selected surfaces in every palette.
+- `scripts/verify_bundle.py` opens the built JAR and checks the real nested mod metadata: Meteor 26.2-35, Catppuccin's 26.2 release binary and Fabric API 0.154.2+26.2. Glazed is absent from the distributed bundle. No Minecraft classes are packaged at the outer JAR root.
+- The corresponding-source archive contains the complete Purple project and the exact Meteor/Catppuccin upstream source archives. Source archive SHA-256 checks pass. Font licensing and Gradle notices are included.
+
+## Actual game tests
+
+An isolated Fabric project in `qa/bundle-smoke` loads **only the assembled Purple Edition JAR** as its runtime mod dependency; Meteor/Catppuccin/Fabric API are compile-only dependencies of the QA harness. The game resolves the three real bundled mods recursively from the nested JARs. No real account token is used.
+
+The base bundle loaded **169 modules**. With official `glazed-26.2-n-17.2.jar` installed separately, it loaded **249 modules**. In-game tests rendered all ten palettes, the unified hub, theme gallery, HUD editor, original Meteor widgets and Classic category windows. The test checks actual module search results and an unmatched query, menu replacement/fallback, Unified/Classic routing and the performance-mode blur bypass. Runs completed normally with a PASS result and screenshots taken from the real render target.
+
+Actual screenshots were reviewed. The review led to removing text shadows from the light menu, adding the licensed Comfortaa font, smoothing corner geometry and removing a hard gradient seam. The unified hub uses its own coordinated background in menus, while retaining the world background and native blur during gameplay.
+
+The observed GPU was a Radeon RX 580 with the OpenGL 3.3 backend. These results do not certify other GPUs, all screen scales, every keybind interaction, accessibility or every upstream gameplay feature. UI rendering is tested; there is no comparative FPS benchmark. The test uses only English UI assets and omits some sound downloads. Development-mode Realms authentication errors and an unrelated Windows performance-counter warning are not treated as successful online-server tests.
+
+## Optional addon limitations
+
+Glazed remains an external install because its license prohibits redistribution. The Glazed integration run omitted OpSec: Glazed's nested ExploitPreventer 1.1.0 is explicitly marked as conflicting by OpSec 1.1.7.1. The UI exposes that warning when both are installed. It does not strip dependencies or disable protections. Live-server behavior and all individual Glazed modules were not tested.
+
+## CI
+
+The 1.1 workflow builds/tests on Windows and Linux, validates the wrapper, verifies nested mod metadata and publishes the corresponding source ZIP alongside the JAR. The authoritative status is on the repository Actions page. The initial release run for 1.0 is retained below as historical evidence, not a claim about 1.1 CI.
+
+# Historical validation — 1.0.0
 
 Verified on 2 November 2026.
 

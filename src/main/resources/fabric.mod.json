@@ -3,7 +3,7 @@
   "id": "meteor-purple-edition",
   "version": "${version}",
   "name": "Meteor Purple Edition",
-  "description": "Purple appearance profiles, synchronized HUD, and OpSec integration for the real Meteor and Catppuccin addons.",
+  "description": "Bundled Meteor and Catppuccin with ten coordinated themes, a custom home screen, unified module/settings hub and an optimized HUD.",
   "authors": ["Meteor Purple Edition contributors"],
   "license": "GPL-3.0-only",
   "environment": "client",

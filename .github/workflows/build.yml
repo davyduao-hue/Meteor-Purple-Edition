@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       publish_release:
-        description: Publish the verified build as the v1.0.0 prerelease
+        description: Publish the verified VERSION as a prerelease
         type: boolean
         default: false
 
@@ -35,10 +35,14 @@ jobs:
       - name: Build on Linux
         if: runner.os != 'Windows'
         run: bash ./gradlew build --no-daemon --console=plain
+      - name: Verify nested bundle
+        run: python scripts/verify_bundle.py
       - uses: actions/upload-artifact@v4
         with:
           name: meteor-purple-edition-${{ runner.os }}
-          path: build/libs/*.jar
+          path: |
+            build/libs/*.jar
+            build/libs/*-corresponding-sources.zip
           if-no-files-found: error
   release:
     needs: build
@@ -56,6 +60,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          RELEASE_REF: ${{ github.ref_type == 'tag' && github.ref_name || 'v1.0.0' }}
+          RELEASE_REF: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
         run: |
-          gh release create "$RELEASE_REF" release/*.jar --target "$GITHUB_SHA" --title "Meteor Purple Edition v1.0.0" --notes-file RELEASE_NOTES.md --prerelease
+          if [ -z "$RELEASE_REF" ]; then RELEASE_REF="v$(cat VERSION)"; fi
+          gh release create "$RELEASE_REF" release/* --target "$GITHUB_SHA" --title "Meteor Purple Edition $RELEASE_REF" --notes-file RELEASE_NOTES.md --prerelease

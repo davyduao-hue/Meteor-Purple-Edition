@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'dev.meteorpurple'
-version = '1.0.0'
+version = file('VERSION').text.trim()
 base { archivesName = 'meteor-purple-edition' }
 
 repositories {
@@ -22,6 +22,11 @@ dependencies {
     implementation 'net.fabricmc.fabric-api:fabric-api:0.154.2+26.2'
     implementation 'meteordevelopment:meteor-client:26.2-20261009.074120-35'
     implementation 'maven.modrinth:3Q35hPRA:TAH6i1zw'
+    include 'meteordevelopment:meteor-client:26.2-20261009.074120-35'
+    include 'maven.modrinth:3Q35hPRA:TAH6i1zw'
+    include 'net.fabricmc.fabric-api:fabric-api:0.154.2+26.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.4'
 }
 
 java {
@@ -36,4 +41,47 @@ processResources {
     inputs.property 'version', project.version
     filesMatching('fabric.mod.json') { expand version: project.version }
 }
-jar { from('LICENSE') { rename { 'LICENSE_meteor-purple-edition' } } }
+jar {
+    from('LICENSE') { rename { 'LICENSE_meteor-purple-edition' } }
+    from('THIRD_PARTY.md')
+}
+test { useJUnitPlatform() }
+
+def sourceArchives = [
+    [name:'meteor-26.2-source.zip', url:'https://codeload.github.com/MeteorDevelopment/meteor-client/zip/2385f7b4bb9de1a698b4503254bd32f30fd7a87d', sha:'b0447363c4941d3eb8e8b4a945c50afb8381b676e2bba94b9d58c9046fa9cb5e'],
+    [name:'catppuccin-2.4.0-source.zip', url:'https://codeload.github.com/X-C-0/catppuccin-addon/zip/eaf2d93cb39db9261d490fd36c76aa8333a7fb79', sha:'c9e599a150ccc0e85995ee0d416e8f4fd016cad2f4becffec0f08701a32b0926']
+]
+def upstreamDir = layout.buildDirectory.dir('upstream-sources')
+def upstreamSources = tasks.register('downloadUpstreamSources') {
+    sourceArchives.each { archive ->
+        inputs.property(archive.name, archive.sha)
+        outputs.file(upstreamDir.map { it.file(archive.name) })
+    }
+    doLast {
+        sourceArchives.each { archive ->
+            def target = upstreamDir.get().file(archive.name).asFile
+            target.parentFile.mkdirs()
+            def digest = { byte[] data -> java.security.MessageDigest.getInstance('SHA-256').digest(data).encodeHex().toString() }
+            if (!target.exists() || digest(target.bytes) != archive.sha) {
+                def connection = URI.create(archive.url).toURL().openConnection()
+                connection.connectTimeout = 30000
+                connection.readTimeout = 60000
+                connection.setRequestProperty('User-Agent', 'Meteor-Purple-Edition-build')
+                def bytes = connection.inputStream.withCloseable { it.bytes }
+                if (digest(bytes) != archive.sha) throw new GradleException("Source checksum mismatch: ${archive.name}")
+                target.bytes = bytes
+            }
+        }
+    }
+}
+def correspondingSources = tasks.register('correspondingSources', Zip) {
+    dependsOn upstreamSources
+    archiveFileName = "meteor-purple-edition-${project.version}-corresponding-sources.zip"
+    destinationDirectory = layout.buildDirectory.dir('libs')
+    from(projectDir) {
+        exclude '.git/**', '**/.gradle/**', '**/build/**', '**/run/**', 'qa/**/screenshots/**'
+        into 'Meteor-Purple-Edition'
+    }
+    from(upstreamDir) { into 'upstream' }
+}
+tasks.named('build') { dependsOn correspondingSources }

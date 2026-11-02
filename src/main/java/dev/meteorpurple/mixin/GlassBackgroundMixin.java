@@ -19,7 +19,7 @@ public abstract class GlassBackgroundMixin {
     @Inject(method = "extractBackground", at = @At("TAIL"))
     private void purple$glassBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
         if (!(GuiThemes.get() instanceof CatppuccinGuiTheme) || Modules.get() == null) return;
-        Appearance appearance = Modules.get().get(Appearance.class);
+        Appearance appearance = Appearance.get();
         if (appearance == null || !appearance.glassBlurEnabled()) return;
         mc.gameRenderer.gameRenderState().optionsRenderState.menuBackgroundBlurriness = appearance.blurRadius.get();
         graphics.blurBeforeThisStratum();
