@@ -13,8 +13,8 @@ public final class PurpleTitleScreen extends Screen {
     private int cardX,cardY,cardW,cardH;
     private static final Component BRAND=Canvas.label("P U R P L E   E D I T I O N"),TITLE=Canvas.label("Meteor."),
         TAGLINE=Canvas.label("Your client. One home."),BUNDLE=Canvas.label("Meteor + Catppuccin included"),
-        SHORTCUT=Canvas.label("Right Shift  /  Client hub"),CLASSIC=Canvas.label("Classic UI is always available."),
-        VERSION=Canvas.label("26.2  /  Fabric  /  Purple 1.1.0");
+        SHORTCUT=Canvas.label("Right Shift  /  Classic UI"),CLASSIC=Canvas.label("Classic UI is always available."),
+        VERSION=Canvas.label("26.2  /  Fabric  /  Purple 1.1.1");
     private Appearance.Style lastStyle;
     private Component styleLabel=Canvas.label("Loading appearance…");
     public PurpleTitleScreen() { super(Component.literal("Meteor Purple Edition")); }
@@ -26,7 +26,7 @@ public final class PurpleTitleScreen extends Screen {
         int by=cardY+44;
         button(bx,by,bw,"Singleplayer",() -> minecraft.gui.setScreen(new SelectWorldScreen(this)));
         button(bx,by+gap,bw,"Multiplayer",() -> minecraft.gui.setScreen(new JoinMultiplayerScreen(this)));
-        button(bx,by+gap*2,bw,"Client hub",() -> minecraft.gui.setScreen(new PurpleHubScreen(GuiThemes.get())));
+        button(bx,by+gap*2,bw,"Classic UI",() -> minecraft.gui.setScreen(GuiThemes.get().modulesScreen()));
         button(bx,by+gap*3,bw,"Themes & appearance",() -> minecraft.gui.setScreen(new ThemeGalleryScreen(this)));
         button(bx,by+gap*4,bw,"Minecraft options",() -> minecraft.gui.setScreen(new OptionsScreen(this,minecraft.options,false)));
         button(bx,by+gap*5,bw,"Quit game",minecraft::stop);

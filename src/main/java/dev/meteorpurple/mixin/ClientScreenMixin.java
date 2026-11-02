@@ -17,8 +17,6 @@ public abstract class ClientScreenMixin {
         Appearance a=Appearance.get();
         if (a==null || screen==null) return screen;
         if (screen instanceof TitleScreen && a.customMenu.get()) return new PurpleTitleScreen();
-        if (!(screen instanceof PurpleHubScreen) && a.layout.get()==Appearance.Layout.Unified
-            && GuiThemes.get()!=null && GuiThemes.get().isModulesScreen(screen)) return new PurpleHubScreen(GuiThemes.get());
         return screen;
     }
 }

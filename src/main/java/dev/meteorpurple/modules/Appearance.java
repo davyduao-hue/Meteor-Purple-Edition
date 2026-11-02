@@ -33,7 +33,6 @@ public final class Appearance extends Module {
         }
         @Override public String toString() { return title; }
     }
-    public enum Layout { Unified, Classic }
     private static Appearance instance;
     public static Appearance get() { return instance; }
     private boolean pending=true,adaptiveSuppressed;
@@ -41,8 +40,6 @@ public final class Appearance extends Module {
     private final SettingGroup general=settings.getDefaultGroup();
     public final Setting<Style> style=general.add(new EnumSetting.Builder<Style>().name("theme")
         .description("Ten live, coordinated UI/menu/HUD palettes.").defaultValue(Style.OS26).onChanged(v -> pending=true).build());
-    public final Setting<Layout> layout=general.add(new EnumSetting.Builder<Layout>().name("client-ui")
-        .description("Unified hub or original movable category windows.").defaultValue(Layout.Unified).build());
     public final Setting<Boolean> customMenu=general.add(new BoolSetting.Builder().name("custom-main-menu")
         .description("Use the Purple home screen; disable to restore Minecraft's menu.").defaultValue(true).build());
     public final Setting<Boolean> performance=general.add(new BoolSetting.Builder().name("performance-mode")
@@ -65,7 +62,7 @@ public final class Appearance extends Module {
         .description("Transition duration; reduced motion bypasses it.").defaultValue(170).range(1,700).sliderRange(1,400)
         .onChanged(v -> pending=true).build());
     public Appearance() {
-        super(PurpleAddon.CATEGORY,"purple-appearance","Themes, home screen, unified UI and rendering budget. Controls work while off.");
+        super(PurpleAddon.CATEGORY,"purple-appearance","Themes, home screen, classic UI and rendering budget. Controls work while off.");
         instance=this; runInMainMenu=true;
     }
     public void select(Style selected) { style.set(selected); applyPending(); }
@@ -79,7 +76,6 @@ public final class Appearance extends Module {
         if (GuiThemes.get()==null || !GuiThemes.get().name.equals(target)) GuiThemes.select(target);
         if (selected==Style.Original) {
             pending=false;
-            if (mc.gui.screen() instanceof PurpleHubScreen hub && !hub.usesTheme(GuiThemes.get())) mc.gui.setScreen(new PurpleHubScreen(GuiThemes.get()));
             return;
         }
         if (!(GuiThemes.get() instanceof CatppuccinGuiTheme theme)) return;
@@ -96,8 +92,7 @@ public final class Appearance extends Module {
         theme.guiAnimationDuration.set(low || reducedMotion.get() ? 1:duration.get());
         theme.catppuccinSearchScreen.set(true); theme.snapModuleCategories.set(true);
         pending=false;
-        if (mc.gui.screen() instanceof PurpleHubScreen hub && !hub.usesTheme(theme)) mc.gui.setScreen(new PurpleHubScreen(theme));
-        else theme.reloadScreen();
+        theme.reloadScreen();
     }
     public Palette palette() { return style.get().palette; }
     public Color accent() { return palette().accent; }
@@ -106,7 +101,6 @@ public final class Appearance extends Module {
     public boolean animate() { return !performance.get() && !reducedMotion.get() && style.get()!=Style.Minimal && style.get()!=Style.Amoled; }
     @Override public WWidget getWidget(GuiTheme theme) {
         var list=theme.verticalList();
-        list.add(theme.button("Open unified client hub")).expandX().widget().action=() -> mc.gui.setScreen(new PurpleHubScreen(GuiThemes.get()));
         list.add(theme.button("Browse theme gallery")).expandX().widget().action=() -> mc.gui.setScreen(new ThemeGalleryScreen(mc.gui.screen()));
         list.add(theme.button("Apply appearance now")).expandX().widget().action=() -> { pending=true; applyPending(); };
         list.add(theme.button("Add missing Purple HUD elements")).expandX().widget().action=PurpleHud::installLayout;

@@ -1,1 +1,0 @@
-{"schemaVersion":1,"id":"purple-smoke","version":"1.0.0","name":"Isolated Purple QA","environment":"client","entrypoints":{"client":["qa.PurpleSmoke"]}}

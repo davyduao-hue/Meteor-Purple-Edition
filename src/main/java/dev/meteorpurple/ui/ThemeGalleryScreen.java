@@ -31,7 +31,6 @@ public final class ThemeGalleryScreen extends Screen {
     }
     @Override public void extractBackground(GuiGraphicsExtractor g,int mouseX,int mouseY,float delta) {}
     @Override public void onClose() {
-        if (parent instanceof PurpleHubScreen) minecraft.gui.setScreen(new PurpleHubScreen(meteordevelopment.meteorclient.gui.GuiThemes.get()));
-        else minecraft.gui.setScreen(parent);
+        minecraft.gui.setScreen(parent);
     }
 }
