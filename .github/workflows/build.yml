@@ -1,0 +1,61 @@
+name: Build and release
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      publish_release:
+        description: Publish the verified build as the v1.0.0 prerelease
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/wrapper-validation@v4
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build on Windows
+        if: runner.os == 'Windows'
+        run: .\gradlew.bat build --no-daemon --console=plain
+      - name: Build on Linux
+        if: runner.os != 'Windows'
+        run: bash ./gradlew build --no-daemon --console=plain
+      - uses: actions/upload-artifact@v4
+        with:
+          name: meteor-purple-edition-${{ runner.os }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.publish_release)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: meteor-purple-edition-Linux
+          path: release
+      - name: Publish prerelease with known limitations
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_REF: ${{ github.ref_type == 'tag' && github.ref_name || 'v1.0.0' }}
+        run: |
+          gh release create "$RELEASE_REF" release/*.jar --target "$GITHUB_SHA" --title "Meteor Purple Edition v1.0.0" --notes-file RELEASE_NOTES.md --prerelease
