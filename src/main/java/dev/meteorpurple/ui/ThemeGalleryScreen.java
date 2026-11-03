@@ -11,7 +11,7 @@ public final class ThemeGalleryScreen extends Screen {
     public ThemeGalleryScreen(Screen parent) { super(Component.literal("Purple theme gallery")); this.parent=parent; }
     @Override protected void init() {
         int w=Math.min(286,(width-44)/2),left=(width-(w*2+12))/2;
-        int step=Math.max(22,Math.min(46,(height-95)/5));
+        int step=Math.max(22,Math.min(46,(height-125)/5));
         int top=48;
         Appearance.Style[] styles=Appearance.Style.values();
         for (int i=0;i<styles.length;i++) {
@@ -21,6 +21,8 @@ public final class ThemeGalleryScreen extends Screen {
             card.setTooltip(net.minecraft.client.gui.components.Tooltip.create(Component.literal(style.subtitle)));
             addRenderableWidget(card);
         }
+        addRenderableWidget(new PurpleButton(width/2-134,height-60,128,22,"Meteor backdrop",() -> Appearance.get().menuBackground.set(Appearance.Backdrop.Meteor)));
+        addRenderableWidget(new PurpleButton(width/2+6,height-60,128,22,"Colosseum backdrop",() -> Appearance.get().menuBackground.set(Appearance.Backdrop.Colosseum)));
         addRenderableWidget(new PurpleButton(width/2-80,height-31,160,22,"Done",this::onClose));
     }
     @Override public void extractRenderState(GuiGraphicsExtractor g,int mouseX,int mouseY,float delta) {

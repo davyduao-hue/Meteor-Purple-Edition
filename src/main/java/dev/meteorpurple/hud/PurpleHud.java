@@ -1,6 +1,7 @@
 package dev.meteorpurple.hud;
 
 import dev.meteorpurple.PurpleAddon;
+import dev.meteorpurple.ui.Spring;
 import dev.meteorpurple.modules.Appearance;
 import meteordevelopment.meteorclient.mixin.MinecraftAccessor;
 import meteordevelopment.meteorclient.settings.*;
@@ -49,6 +50,10 @@ public final class PurpleHud extends HudElement {
     private double frameSeconds;
     private int frameSamples;
     private double averageFrameMs;
+    private final Spring gameEnter=new Spring(0),gamePulse=new Spring(0);
+    private long lastRender;
+    private int contentHash;
+    private final Color animatedText=new Color(),animatedEdge=new Color(),pulseColor=new Color(255,255,255,160);
     private final Color bg = new Color(30, 30, 46, 210);
     private final SettingGroup general = settings.getDefaultGroup();
     private final Setting<Double> scale = general.add(new DoubleSetting.Builder().name("scale")
@@ -143,6 +148,8 @@ public final class PurpleHud extends HudElement {
             }
             case Server -> lines.add(mc.getCurrentServer() == null ? "Singleplayer / offline" : mc.getCurrentServer().name);
         }
+        int hash=lines.hashCode();
+        if(hash!=contentHash) { gamePulse.kick(2); contentHash=hash; }
     }
 
     private static final EquipmentSlot[] ARMOR = { EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET };
@@ -158,18 +165,31 @@ public final class PurpleHud extends HudElement {
             setSize(width+22,lines.size()*lineHeight+13); updatePos(); measurementDirty=false;
         }
         Appearance appearance = Appearance.get();
+        boolean animate=appearance.animateGame() && !isInEditor();
+        long now=System.nanoTime();
+        float dt=lastRender==0 ? 1/60f:Math.max(0,Math.min(.1f,(now-lastRender)/1_000_000_000f));
+        if(animate && now-lastRender>250_000_000L) gameEnter.reset(0);
+        lastRender=now;
+        if(animate) { gameEnter.update(1,dt,13); gamePulse.update(0,dt,17); }
+        else { gameEnter.reset(1); gamePulse.reset(0); }
+        float reveal=Math.max(0,Math.min(1,gameEnter.value()));
+        int drawX=Math.round(x+(1-gameEnter.value())*-8),drawY=Math.round(y+(1-gameEnter.value())*3);
         Color accent = synchronize.get() ? appearance.accent() : customAccent.get();
         Color base = synchronize.get() ? appearance.background() : customBackground.get();
-        int alpha = appearance.performance.get() ? 255 : (int) (255 * opacity.get());
+        int alpha = Math.round((appearance.performance.get() ? 255 : (float) (255 * opacity.get()))*reveal);
         bg.set(base.r, base.g, base.b, alpha);
         if (background.get()) {
             // Tiny cached radius; 13 batched quads, with no blur, shadows or texture pass.
-            rounded(renderer,x,y,getWidth(),getHeight(),bg);
-            renderer.quad(x+8,y+getHeight()-2,getWidth()-16,2,accent);
+            rounded(renderer,drawX,drawY,getWidth(),getHeight(),bg);
+            animatedEdge.set(accent.r,accent.g,accent.b,Math.round(accent.a*reveal));
+            renderer.quad(drawX+8,drawY+getHeight()-2,getWidth()-16,2,animatedEdge);
+            if(animate && gamePulse.value()>.005f) renderer.quad(drawX+8,drawY+getHeight()-2,(getWidth()-16)*Math.min(1,gamePulse.value()*3),1,pulseColor);
         }
-        double rowY = y + 6;
+        Color textColor=synchronize.get() ? appearance.palette().text:accent;
+        animatedText.set(textColor.r,textColor.g,textColor.b,Math.round(textColor.a*reveal));
+        double rowY = drawY + 6;
         for (String line : lines) {
-            renderer.text(line,x+9,rowY,synchronize.get() ? appearance.palette().text:accent,false,measuredScale);
+            renderer.text(line,drawX+9,rowY,animatedText,false,measuredScale);
             rowY += lineHeight;
         }
     }

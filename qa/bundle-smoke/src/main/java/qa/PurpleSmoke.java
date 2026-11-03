@@ -21,6 +21,7 @@ import java.nio.file.*;
 
 public class PurpleSmoke implements ClientModInitializer {
     private int ticks,step=-1;
+    private int preview=-1;
     private String shot;
     private boolean captureReload,overlayCaptured;
     private int overlayTicks;
@@ -49,6 +50,16 @@ public class PurpleSmoke implements ClientModInitializer {
             return;
         }
         if(mc.gui.screen()==null && mc.player==null) return;
+        if(preview>=0 && preview<65) {
+            if(preview==22) { Button b=find(mc,"Singleplayer"); if(b!=null) b.setFocused(true); }
+            if(preview==45) { Button b=find(mc,"Singleplayer"); if(b!=null) b.setFocused(false); }
+            final int frame=preview++;
+            try { Files.createDirectories(out.resolve("motion")); } catch(Exception e) { throw new RuntimeException(e); }
+            Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(),image -> {
+                try { image.writeToFile(out.resolve("motion/frame"+String.format("%03d",frame)+".png")); } catch(Exception e) { throw new RuntimeException(e); } finally { image.close(); }
+            });
+            return;
+        }
         if(++ticks<45) return;
         ticks=0;
         if(shot!=null) {
@@ -71,10 +82,16 @@ public class PurpleSmoke implements ClientModInitializer {
                     c.getMethod("getInstance").invoke(null);
                 } catch(Exception e) { throw new RuntimeException(e); }
             }
-            a.performance.set(false); a.reducedMotion.set(false); a.blurRadius.set(0); a.select(Appearance.Style.Mocha); a.customMenu.set(true); a.useCustomAccent.set(false);
+            a.performance.set(false); a.reducedMotion.set(false); a.blurRadius.set(0); a.uiAnimations.set(true); a.gameAnimations.set(false); a.menuBackground.set(Appearance.Backdrop.Meteor); a.select(Appearance.Style.Mocha); a.customMenu.set(true); a.useCustomAccent.set(false);
             require(!a.glassBlurEnabled(),"no default blur");
+            require(a.menuBackground.get()==Appearance.Backdrop.Meteor,"Meteor backdrop default");
+            require(!a.gameAnimations.get(),"game animations opt in");
             mc.gui.setScreen(new TitleScreen());
             require(mc.gui.screen() instanceof PurpleTitleScreen,"custom menu route");
+            a.uiAnimations.set(false); require(!a.animate(),"UI motion off");
+            a.uiAnimations.set(true); require(a.animate(),"UI motion on");
+            a.gameAnimations.set(true); a.reducedMotion.set(true); require(!a.animateGame(),"reduced motion overrides game feedback");
+            a.reducedMotion.set(false); a.gameAnimations.set(false); preview=0;
             require(Modules.get().getCount()>100,"Meteor modules"); shot="menu-mocha";
         } else if(step==1) {
             Button single=find(mc,"Singleplayer"); require(single!=null,"vanilla singleplayer button"); single.onPress(null);
@@ -87,8 +104,11 @@ public class PurpleSmoke implements ClientModInitializer {
             require(mc.gui.screen() instanceof OptionsScreen,"native options action"); shot="options";
         } else if(step==3) {
             mc.gui.setScreen(new TitleScreen()); Button themes=find(mc,"Themes"); require(themes!=null,"theme button"); themes.onPress(null);
-            require(mc.gui.screen() instanceof ThemeGalleryScreen,"gallery action"); shot="theme-gallery";
+            require(mc.gui.screen() instanceof ThemeGalleryScreen,"gallery action");
+            a.menuBackground.set(Appearance.Backdrop.Colosseum); require(a.menuBackground.get()==Appearance.Backdrop.Colosseum,"optional colosseum selection");
+            mc.gui.setScreen(new TitleScreen()); shot="optional-colosseum";
         } else if(step>=4 && step<14) {
+            a.menuBackground.set(Appearance.Backdrop.Meteor);
             var style=Appearance.Style.values()[step-4]; a.select(style);
             mc.gui.setScreen(GuiThemes.get().modulesScreen());
             shot="classic-"+style.name().toLowerCase();
@@ -130,10 +150,13 @@ public class PurpleSmoke implements ClientModInitializer {
             mc.createWorldOpenFlows().openWorld("Zenith-Colosseum",() -> {}); shot=null;
         } else if(step==22 && mc.player!=null) {
             require(mc.level!=null,"real colosseum world joined");
+            a.gameAnimations.set(true); require(a.animateGame(),"optional gameplay HUD motion enabled");
             mc.getSingleplayerServer().execute(() -> mc.getSingleplayerServer().getCommands().performPrefixedCommand(mc.getSingleplayerServer().createCommandSourceStack(),"setworldspawn 0 76 12"));
             shot="zenith-world-hud";
         } else {
             require(overlayCaptured,"real branded resource-reload overlay captured");
+            a.gameAnimations.set(false); require(!a.animateGame(),"game motion can be disabled");
+            a.menuBackground.set(Appearance.Backdrop.Meteor); a.uiAnimations.set(true); a.performance.set(false);
             shot=null;
             try { Files.writeString(out.resolve("RESULT.txt"),"PASS: native menu actions, ten classic palettes, custom accent, editable anchored HUD and toggles, performance mode, optional addon status/settings. Modules: "+Modules.get().getCount()); }
             catch(Exception e) { throw new RuntimeException(e); }

@@ -3,7 +3,7 @@
   "id": "meteor-purple-edition",
   "version": "${version}",
   "name": "Meteor Purple Edition",
-  "description": "Meteor and Catppuccin with a shader-captured moonlit Minecraft colosseum panorama, Zenith loading screens, classic UI and editable Zenith HUD bars.",
+  "description": "Meteor and Catppuccin with a clean Meteor-logo menu, optional colosseum backdrop, springy UI motion, refined Zenith loading screens and optional in-game HUD feedback.",
   "authors": ["Meteor Purple Edition contributors"],
   "license": "GPL-3.0-only",
   "environment": "client",

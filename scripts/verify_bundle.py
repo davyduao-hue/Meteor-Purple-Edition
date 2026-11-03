@@ -34,3 +34,7 @@ with zipfile.ZipFile(artifact) as bundle:
         assert hashlib.sha256(data).hexdigest()==face['sha256']
     assert not any('moonlit-colosseum.png' in name for name in bundle.namelist())
     print('Verified six native Minecraft panorama captures and their SHA-256 hashes.')
+
+    atlas=bundle.read('assets/meteor-purple-edition/textures/ui/brand-atlas.png')
+    assert atlas[:8]==b'\x89PNG\r\n\x1a\n' and struct.unpack('>II',atlas[16:24])==(1024,512)
+    print('Verified bootstrap typography atlas.')

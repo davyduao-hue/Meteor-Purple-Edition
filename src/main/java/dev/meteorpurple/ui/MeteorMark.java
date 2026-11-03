@@ -17,16 +17,15 @@ public final class MeteorMark {
     private static Matrix3x2f face(float x0,float y0,float x1,float y1,float x3,float y3) {
         return new Matrix3x2f(x1-x0,y1-y0,x3-x0,y3-y0,x0,y0);
     }
-    public static void draw(GuiGraphicsExtractor g,int width,int height) {
-        float w=Math.min(width-32,height*1.12f),scale=w/800f;
-        g.pose().pushMatrix();
-        g.pose().translate((width-w)/2,(height-606*scale)/2);
-        g.pose().scale(scale);
-        for(int i=0;i<FACES.length;i++) {
-            g.pose().pushMatrix(); g.pose().mul(FACES[i]);
-            g.fill(0,0,1,1,0x78000000|COLORS[i]);
+    public static void drawAt(GuiGraphicsExtractor g,float cx,float cy,float width,int alpha,float tilt,boolean shadow) {
+        if(shadow) {
+            g.pose().pushMatrix(); g.pose().translate(cx,cy+width*.36f); g.pose().scale(width/800f,width/4800f);
+            g.pose().translate(-400,-303);
+            for(var face:FACES) { g.pose().pushMatrix(); g.pose().mul(face); g.fill(0,0,1,1,Math.round(alpha*.20f)<<24); g.pose().popMatrix(); }
             g.pose().popMatrix();
         }
+        g.pose().pushMatrix(); g.pose().translate(cx,cy); g.pose().rotate(tilt); g.pose().scale(width/800f); g.pose().translate(-400,-303);
+        for(int i=0;i<FACES.length;i++) { g.pose().pushMatrix(); g.pose().mul(FACES[i]); g.fill(0,0,1,1,(alpha<<24)|COLORS[i]); g.pose().popMatrix(); }
         g.pose().popMatrix();
     }
 }

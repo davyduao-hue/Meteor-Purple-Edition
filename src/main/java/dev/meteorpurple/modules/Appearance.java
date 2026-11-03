@@ -35,6 +35,7 @@ public final class Appearance extends Module {
         }
         @Override public String toString() { return title; }
     }
+    public enum Backdrop { Meteor, Colosseum }
     private static Appearance instance;
     public static Appearance get() { return instance; }
     private boolean pending=true,adaptiveSuppressed;
@@ -43,14 +44,22 @@ public final class Appearance extends Module {
     public final Setting<Style> style=general.add(new EnumSetting.Builder<Style>().name("theme")
         .description("Ten live, coordinated UI/menu/HUD palettes.").defaultValue(Style.Mocha).onChanged(v -> pending=true).build());
     public final Setting<Boolean> customMenu=general.add(new BoolSetting.Builder().name("custom-main-menu")
-        .description("Minecraft menu layout with a shader-captured moonlit colosseum panorama and hover underlines.").defaultValue(true).build());
+        .description("Clean Meteor-logo menu with optional colosseum backdrop and springy interaction.").defaultValue(true).build());
+    public final Setting<Backdrop> menuBackground=general.add(new EnumSetting.Builder<Backdrop>().name("menu-background")
+        .description("Meteor logo is the default; Colosseum is an optional captured panorama.").defaultValue(Backdrop.Meteor)
+        .onChanged(v -> ColosseumPanorama.select(v==Backdrop.Colosseum)).build());
+    public final Setting<Boolean> uiAnimations=general.add(new BoolSetting.Builder().name("ui-animations")
+        .description("Springy menu buttons, floating logo and expressive loading feedback.").defaultValue(true).onChanged(v -> { pending=true; saveMotion(); }).build());
+    public final Setting<Boolean> gameAnimations=general.add(new BoolSetting.Builder().name("in-game-animations")
+        .description("Optional Zenith HUD entrance/pulses and springy pause/options buttons. No camera shake or gameplay changes.")
+        .defaultValue(false).onChanged(v -> saveMotion()).build());
     public final Setting<Boolean> menuCredits=general.add(new BoolSetting.Builder().name("menu-addon-credits")
         .description("Show Meteor's addon credit overlay on the custom main menu.").defaultValue(false).build());
     public final Setting<Boolean> performance=general.add(new BoolSetting.Builder().name("performance-mode")
         .description("Skip blur, shadows and animation; use opaque panels and a lower HUD refresh rate.")
-        .defaultValue(false).onChanged(v -> pending=true).build());
+        .defaultValue(false).onChanged(v -> { pending=true; saveMotion(); }).build());
     public final Setting<Boolean> reducedMotion=general.add(new BoolSetting.Builder().name("reduced-motion")
-        .description("Disable transitions while preserving transparency.").defaultValue(false).onChanged(v -> pending=true).build());
+        .description("Disable transitions while preserving transparency.").defaultValue(false).onChanged(v -> { pending=true; saveMotion(); }).build());
     public final Setting<Boolean> adaptiveBlur=general.add(new BoolSetting.Builder().name("adaptive-blur")
         .description("Suspend blur below 45 FPS; restore above 60 FPS, sampled once per second.").defaultValue(true).build());
     public final Setting<Integer> blurRadius=general.add(new IntSetting.Builder().name("glass-blur-radius")
@@ -104,7 +113,7 @@ public final class Appearance extends Module {
         theme.smallCornerRadius.set(compact ? 3:selected==Style.OS26 ? 10:6);
         theme.windowShadow.set(!low && softShadows.get()); theme.shadowBlur.set(low || !softShadows.get() ? 0:10);
         theme.shadowSpread.set(-5); theme.shadowOffsetY.set(selected.glass ? 4:2);
-        theme.guiAnimationDuration.set(low || reducedMotion.get() ? 1:duration.get());
+        theme.guiAnimationDuration.set(low || reducedMotion.get() || !uiAnimations.get() ? 1:duration.get());
         theme.catppuccinSearchScreen.set(true); theme.snapModuleCategories.set(true);
         pending=false;
         theme.reloadScreen();
@@ -134,7 +143,13 @@ public final class Appearance extends Module {
     public Color accent() { return palette().accent; }
     public Color background() { return palette().base; }
     public boolean glassBlurEnabled() { return style.get().glass && !performance.get() && blurRadius.get()>0 && (!adaptiveBlur.get() || !adaptiveSuppressed); }
-    public boolean animate() { return !performance.get() && !reducedMotion.get() && style.get()!=Style.Minimal && style.get()!=Style.Amoled; }
+    private boolean motionAllowed() { return !performance.get() && !reducedMotion.get() && style.get()!=Style.Minimal && style.get()!=Style.Amoled; }
+    public boolean animate() { return uiAnimations.get() && motionAllowed(); }
+    public boolean animateGame() { return gameAnimations.get() && motionAllowed(); }
+    private void saveMotion() {
+        if(instance!=this || uiAnimations==null || gameAnimations==null || reducedMotion==null || performance==null) return;
+        MotionPrefs.save(uiAnimations.get(),gameAnimations.get(),reducedMotion.get(),performance.get());
+    }
     @Override public WWidget getWidget(GuiTheme theme) {
         var list=theme.verticalList();
         list.add(theme.button("Browse theme gallery")).expandX().widget().action=() -> mc.gui.setScreen(new ThemeGalleryScreen(mc.gui.screen()));

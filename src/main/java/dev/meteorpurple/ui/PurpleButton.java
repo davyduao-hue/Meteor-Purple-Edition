@@ -11,6 +11,7 @@ public final class PurpleButton extends Button {
         super(x,y,w,h,Canvas.label(title),ignored -> action.run(),DEFAULT_NARRATION);
         this.preview=preview;
     }
+    @Override public void onPress(net.minecraft.client.input.InputWithModifiers input) { motion.press(); super.onPress(input); }
     @Override protected void extractContents(GuiGraphicsExtractor g,int mouseX,int mouseY,float delta) {
         ButtonPaint.draw(g,this,preview==null ? Canvas.palette():preview,motion);
     }

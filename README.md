@@ -1,61 +1,48 @@
-# Meteor Purple Edition · Zenith HUD
+# Meteor Purple Edition v1.4.0 · Zenith
 
-Minecraft's familiar main menu, with a custom moonlit colosseum panorama **built and photographed in Minecraft**. The arena has three arcades, 48 bays, stepped seating, a ruined moon-facing wall and a purple Meteor monument. Cool moonlight meets a warm sunrise horizon. The real vanilla buttons, world selection, Realms, multiplayer checks, language/accessibility controls, narration and addon hooks are preserved. A small Themes button opens the live palette gallery. The optional addon-credit overlay can be enabled with menu-addon-credits; it is hidden by default on this menu. Hover or keyboard focus reveals an accent underline with one short shine; it stops when settled.
+A clean Meteor-logo main menu with rounded typography, springy button feedback and a matching animated Zenith loading screen. Minecraft's real menu actions, narration, world selection, multiplayer/Realms checks, friends, language and accessibility controls remain intact. The client UI stays classic: Right Shift opens normal Meteor/Catppuccin category windows.
 
-The client UI stays classic: **Right Shift** opens the normal Meteor/Catppuccin category windows. There is no unified hub or alternate layout selector.
+## Download
 
-## Download and install
+[Download v1.4.0](https://github.com/davyduao-hue/Meteor-Purple-Edition/releases/tag/v1.4.0). Replace the previous Purple Edition JAR with **meteor-purple-edition-1.4.0.jar** in your instance's mods folder.
 
-[Download v1.3.0](https://github.com/davyduao-hue/Meteor-Purple-Edition/releases/tag/v1.3.0). Use **meteor-purple-edition-1.3.0.jar**, replacing your previous Purple Edition JAR in your instance's `mods` folder.
+Requires Minecraft Java **26.2**, Java **25** and Fabric Loader **0.19.3+**. Meteor 26.2-35, Catppuccin 2.4.0+mc26.2 and Fabric API 0.154.2+26.2 are bundled; remove duplicate standalone copies of those three mods.
 
-Requires **Minecraft Java 26.2**, **Java 25** and **Fabric Loader 0.19.3+**. Meteor 26.2-35, Catppuccin 2.4.0+mc26.2 and Fabric API 0.154.2+26.2 are already included. Remove duplicate standalone copies of those three mods.
+## Menu and loading
 
-## Appearance and performance
+The **Meteor backdrop is the default**, including upgrades from v1.3.0. It has a floating purple Meteor mark with a grounded shadow, restrained cursor-follow movement, staggered button entrances, springy hover lift, click compression, rounded surfaces and a short sheen. The large Minecraft wordmark and promotional splash are hidden on this custom menu. Disable custom-main-menu to use Minecraft's normal menu.
 
-Open **Purple → Purple Appearance** in the classic UI. Choose Mocha, Purple Glass, Minimal Lavender, OS26 Glass, Midnight, Rose Quartz, Ocean, Forest, AMOLED Violet or Original Meteor. Palettes use quieter surface tints and stronger secondary text. Enable **custom-accent** and choose **accent-color** for the underline, panels and HUD edges; body text retains its readable theme color. Original uses Meteor's own classic widgets; the custom accent still applies to the menu and HUD.
+The colosseum is optional: open **Themes** and choose **Colosseum backdrop**, or change **Purple → Purple Appearance → menu-background**. Choose **Meteor backdrop** to return. The optional cubemap is loaded only when selected and released when switching back; the default logo menu does not load the extra 24 MiB colosseum GPU image. The six panorama images remain packaged for offline use. [Panorama source and capture tools](tools/panorama-studio) document the real Minecraft/shader capture.
 
-Blur and window shadows are **off by default**. Glass transparency does not require blur. Optional adaptive blur suspends the blur pass at low FPS. Performance mode disables animations, blur and shadows, makes panels opaque, and refreshes HUD data twice per second instead of four times. Reduced motion removes transitions without changing the palette. No system services, registry settings, drivers, security tools or global Windows settings are changed.
+Both resource loading and world loading use **Zenith Client** and **the client for the elite**, in smooth Comfortaa typography. The new pill-shaped loading bar follows actual native progress through a bounded spring, with a bright end cap, gloss and six small spark particles on progress advances. The logo has a soft entrance and gentle float. Percentages come from the real native progress value. There are no artificial minimum loading durations or completion delays. Native reload, errors, world readiness, fades and narration still control the lifecycle.
 
-The menu uses six 1024×1024 views captured in Minecraft 26.2 with Iris 1.11.4, Sodium 0.9.2 and Complementary Reimagined r5.9.3. It rotates through Minecraft’s normal cubemap renderer. Shader lighting, bloom and shadows are baked into the images: **Iris, Sodium and shader packs are not required or bundled for the finished menu**. Reduced motion and performance mode freeze panorama rotation. The cubemap uses approximately 24 MiB of uncompressed GPU image storage; no world simulation or live shader pass runs behind the menu. Hover shine runs once per entry. HUD frame sampling only adds two numbers per rendered frame; string formatting, heap reads and text measurements run at the bounded HUD refresh rate. There are no HUD blur passes, polling threads or background network requests from Purple Edition.
+A small pre-rendered Comfortaa type atlas is registered directly from the addon during bootstrap, so the custom font works on the very first resource load without relying on Minecraft's font reload being complete. The atlas generation script and original OFL font are included.
 
-## Zenith loading screens
+## Motion controls
 
-Resource loading displays **Zenith Client** with **the client for the elite**, a dark indigo background and a lavender progress bar. Minecraft still controls reload completion, error handling and fades. World loading displays the same title and tagline above the native terrain progress.
+Open **Purple → Purple Appearance**:
 
-## Zenith HUD
+- **ui-animations**: menu, gallery and loading motion; on by default.
+- **in-game-animations**: optional Zenith HUD entrance/value glints and springy Minecraft pause/options buttons in a world; off by default.
+- **reduced-motion**: turns off both kinds of motion while keeping the appearance.
+- **performance-mode**: disables motion, particles, blur and shadows, makes panels opaque, freezes the optional panorama and lowers HUD data refresh from 4 Hz to 2 Hz.
 
-Two bars are added once after settings load:
+In-game feedback does not shake the camera, move the player, alter hitboxes, change physics or delay actions. HUD editor positions stay stable. A tiny namespaced motion preference file in the instance's config folder preserves accessibility choices before Meteor initializes. It is read once during bootstrap and written only when motion settings change.
 
-- **Zenith Client**: a floating top-left brand bar, with optional FPS.
-- **Zenith Performance**: bottom-left frame interval, connection ping and used/max JVM heap. Frame interval is measured from rendered frames; heap is Java heap, not total PC RAM.
+## Themes and HUD
 
-Open Meteor's **HUD editor** to move, resize, toggle or remove either bar. Right-click an element to edit scale, background, opacity, theme synchronization and colors. Metrics can be toggled individually. The bottom bar uses Meteor's bottom anchor and remains attached to that edge after resizing. Existing elements and edited positions are retained. Deleted bars are not re-created on every launch; **Add Zenith HUD bars** restores only missing bars. The previous `purple-watermark` ID is retained so saved layouts migrate to the Zenith label.
+Ten live themes remain: Mocha, Purple Glass, Minimal Lavender, OS26 Glass, Midnight, Rose Quartz, Ocean, Forest, AMOLED Violet and Original Meteor. Custom accent color changes hover/selection feedback, HUD edges and loading bar color. Minimal and AMOLED suppress motion as part of their low-effect style. Blur and window shadows remain off by default.
 
-The other optional Purple elements (FPS, ping, coordinates, modules, armor, effects, memory and server) remain in Meteor's HUD catalog. They are not all added automatically.
+Meteor's HUD editor lets you move, scale, disable or remove the **Zenith Client/FPS** bar and **Zenith Performance** panel (actual average frame interval, ping and Java heap). Each metric can be toggled. Existing layouts and positions are retained. Optional legacy Purple HUD elements remain in the catalog.
 
-## Optional addons
+## Optional addons and validation
 
-Use official **26.2** releases. Glazed and OpSec are separate installs; do not add a second ExploitPreventer when Glazed already supplies it.
+Glazed and OpSec remain separate official 26.2 installs; Glazed includes ExploitPreventer, so avoid adding a duplicate copy. Tests cover the standalone bundle and Glazed 17.2 + ExploitPreventer 1.1.0 + OpSec 1.1.7.1. OpSec's official EP compatibility mode is detected without changing either protection engine. Its upstream Fabric conflict warning remains. See [THIRD_PARTY.md](THIRD_PARTY.md) for source/license details and official links.
 
-| Combination | Validation |
-| --- | --- |
-| Purple bundle alone | Build and automated runtime smoke test |
-| Purple + Glazed 17.2 + its ExploitPreventer 1.1.0 + OpSec 1.1.7.1 | Runtime test checks initialization, classic UI, OpSec's EP compatibility flag and official settings screen |
+Run `gradlew.bat build` or `bash gradlew build`, followed by `python scripts/verify_bundle.py`. Build artifacts and complete corresponding sources are in build/libs. GitHub Actions builds on Windows and Linux before publishing. [VALIDATION.md](VALIDATION.md) records the tests and limits. No controlled FPS-gain claim or live-server protection certification is made. No global Windows settings or normal launcher profile was modified.
 
-OpSec 1.1.7.1 detects EP and defers its overlapping protections to EP while preserving saved preferences and its remaining features. Fabric still prints OpSec's upstream `conflicts` metadata warning. Purple does not suppress the warning, strip a mod, bypass protection, or alter either protection engine. **Purple Privacy** displays installed addon status and the detected compatibility mode. This is startup/UI interoperability testing, not a claim of comprehensive live-server protection testing.
+## Actual in-game screenshots
 
-Official sources: [Glazed](https://github.com/realnnpg/Glazed/releases), [OpSec](https://github.com/aurickk/OpSec/releases), [ExploitPreventer](https://github.com/NikOverflow/ExploitPreventer). Glazed's license prevents bundling it. See [THIRD_PARTY.md](THIRD_PARTY.md) for exact bundled source revisions and licenses.
+![Default Meteor-logo menu](docs/screenshots/v1.4.0/menu.png)
 
-## Build and validation
-
-Run `gradlew.bat build` (Windows) or `bash gradlew build` (Linux), then `python scripts/verify_bundle.py`. Artifacts are in `build/libs/`. Releases include the binary, addon sources and a complete corresponding-source archive with pinned Meteor/Catppuccin sources. GitHub Actions builds and tests on Windows and Linux before publishing.
-
-See [VALIDATION.md](VALIDATION.md) for evidence and limits. No live-server exploit tests or controlled gameplay FPS comparison have been performed.
-
-## Actual screenshots
-
-![Moonrise colosseum panorama in the real client](docs/screenshots/v1.3.0/menu.png)
-
-![Zenith resource loading](docs/screenshots/v1.3.0/loading.png)
-
-The reproducible block builder, pinned capture setup and shader settings are in [tools/panorama-studio](tools/panorama-studio). Capture metadata and face checksums ship beside the six textures. No AI-generated artwork is used in the client.
+![Redesigned Zenith loading screen](docs/screenshots/v1.4.0/loading.png)
