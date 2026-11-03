@@ -11,10 +11,10 @@ public final class PurpleTitleScreen extends TitleScreen {
         addRenderableWidget(new PurpleButton(8,8,70,20,"Themes",() -> minecraft.gui.setScreen(new ThemeGalleryScreen(this))));
     }
     @Override protected void extractPanorama(GuiGraphicsExtractor g,float delta) {
-        Palette selected=Canvas.palette();
-        Palette p=selected.light ? dev.meteorpurple.modules.Appearance.Style.Midnight.palette:selected;
-        g.fillGradient(0,0,width,height,Palette.argb(p.mantle,255),Palette.argb(p.base,255));
-        MeteorMark.draw(g,width,height);
-        g.fillGradient(0,height/3,width,height,0x00000000,Palette.argb(p.mantle,200));
+        var a=dev.meteorpurple.modules.Appearance.get();
+        if(a!=null && !a.animate()) minecraft.gameRenderer.gameRenderState().optionsRenderState.panoramaSpeed=0;
+        // Use Minecraft's cubemap renderer directly; the captured shader lighting is baked in.
+        minecraft.gameRenderer.panorama().extractRenderState(g,width,height);
+        g.fillGradient(0,0,width,height,0x08080b18,0x28080b18);
     }
 }

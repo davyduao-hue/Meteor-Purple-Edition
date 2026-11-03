@@ -2,6 +2,6 @@
   "required": true,
   "package": "dev.meteorpurple.mixin",
   "compatibilityLevel": "JAVA_25",
-  "client": ["GlassBackgroundMixin", "GlassPaletteMixin", "ClientScreenMixin", "MenuButtonMixin", "MenuCreditsMixin"],
+  "client": ["GlassBackgroundMixin", "GlassPaletteMixin", "ClientScreenMixin", "MenuButtonMixin", "MenuCreditsMixin", "ColosseumPanoramaMixin", "LoadingOverlayMixin", "WorldLoadingBrandMixin"],
   "injectors": { "defaultRequire": 1 }
 }

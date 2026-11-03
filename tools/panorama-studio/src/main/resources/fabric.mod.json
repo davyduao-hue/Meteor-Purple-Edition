@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"zenith-studio","version":"1.0.0","name":"Zenith Colosseum Capture Studio","environment":"client","entrypoints":{"client":["studio.ColosseumStudio"]},"mixins":["studio.mixins.json"]}

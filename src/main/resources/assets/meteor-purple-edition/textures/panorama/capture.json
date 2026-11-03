@@ -1,0 +1,39 @@
+{
+  "minecraft": "26.2",
+  "iris": "1.11.4+26.2-fabric",
+  "sodium": "0.9.2+mc26.2",
+  "shader": "Complementary Reimagined r5.9.3",
+  "seed": 6582,
+  "time": 22500,
+  "source": "Actual Minecraft world, six native 90-degree camera views; not AI generated",
+  "resolution": [
+    1024,
+    1024
+  ],
+  "faces": [
+    {
+      "file": "colosseum_0.png",
+      "sha256": "1095ceae605b7653959f5e0631babd3e6861acd4343163b8bfde41b73e097498"
+    },
+    {
+      "file": "colosseum_1.png",
+      "sha256": "c5bbe8d08e237ee9631f9ed1e9c5c03dc63ac8509f5d473d0084543743b76d52"
+    },
+    {
+      "file": "colosseum_2.png",
+      "sha256": "19c1e58eec114e37ae3de1396ca70d06a7ea68558bdf43b1483527ef7d99724f"
+    },
+    {
+      "file": "colosseum_3.png",
+      "sha256": "3b81819741a3fa22a45f8573ac2e087339ed7e2df6e643c07b314e8fd18ff2ae"
+    },
+    {
+      "file": "colosseum_4.png",
+      "sha256": "25fd2a75a182572398a1a800b47c0bc6a28bc084e13f40d2a8510da1f5463012"
+    },
+    {
+      "file": "colosseum_5.png",
+      "sha256": "21f5fcba0c1c1a9d17c0e506a4f74cacac562e4d91807a72f1b1ad942822ff2b"
+    }
+  ]
+}

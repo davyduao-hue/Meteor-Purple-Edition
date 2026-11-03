@@ -19,3 +19,7 @@ Gradle wrapper files are Apache-2.0; see LICENSE-GRADLE and NOTICE-GRADLE in the
 The menu font is Comfortaa, Copyright 2011 The Comfortaa Project Authors, distributed under the SIL Open Font License 1.1. Its full license is included at `licenses/comfortaa-ofl.txt`. The unmodified TTF is the same font distributed by the pinned Meteor source. Official font project: https://github.com/googlefonts/comfortaa.
 
 The menu Meteor mark is a native vector rendition of the seven purple faces in the bundled Meteor logo. Its geometry and upstream GPL attribution are preserved through the pinned Meteor corresponding-source archive. It is not an official Meteor endorsement.
+
+## Minecraft panorama captures
+
+The v1.3.0 panorama consists of original screenshots of the project's custom Minecraft block-built colosseum, captured with **Iris 1.11.4+26.2-fabric**, **Sodium 0.9.2+mc26.2** and **Complementary Reimagined r5.9.3**. The shader was obtained from its official [Modrinth project](https://modrinth.com/shader/complementary-reimagined); official creator site: https://www.complementary.dev/. Complementary License Agreement 1.7 section 1.1 permits normal usage for content creation. No shader code, Iris or Sodium binaries are distributed in this addon; only the rendered screenshots and our original scene/capture code are included. The capture records and SHA-256 image hashes are in textures/panorama/capture.json inside the addon assets.

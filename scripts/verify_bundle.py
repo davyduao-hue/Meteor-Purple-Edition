@@ -22,3 +22,15 @@ with zipfile.ZipFile(artifact) as bundle:
     assert 'THIRD_PARTY.md' in bundle.namelist()
     assert not any(path.startswith('net/minecraft/') for path in bundle.namelist())
     print('Verified bundle:',metadata['version'],nested)
+
+    import hashlib, struct
+    root='assets/meteor-purple-edition/textures/panorama/'
+    capture=json.loads(bundle.read(root+'capture.json'))
+    assert capture['minecraft']=='26.2' and len(capture['faces'])==6
+    for face in capture['faces']:
+        data=bundle.read(root+face['file'])
+        assert data[:8]==b'\x89PNG\r\n\x1a\n'
+        assert struct.unpack('>II',data[16:24])==(1024,1024)
+        assert hashlib.sha256(data).hexdigest()==face['sha256']
+    assert not any('moonlit-colosseum.png' in name for name in bundle.namelist())
+    print('Verified six native Minecraft panorama captures and their SHA-256 hashes.')

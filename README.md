@@ -1,12 +1,12 @@
 # Meteor Purple Edition · Zenith HUD
 
-Minecraft's familiar main menu, with a static purple Meteor mark replacing the panorama. The real vanilla buttons, world selection, Realms, multiplayer checks, language/accessibility controls, narration and addon hooks are preserved. A small Themes button opens the live palette gallery. The optional addon-credit overlay can be enabled with menu-addon-credits; it is hidden by default on this menu. Hover or keyboard focus reveals an accent underline with one short shine; it stops when settled.
+Minecraft's familiar main menu, with a custom moonlit colosseum panorama **built and photographed in Minecraft**. The arena has three arcades, 48 bays, stepped seating, a ruined moon-facing wall and a purple Meteor monument. Cool moonlight meets a warm sunrise horizon. The real vanilla buttons, world selection, Realms, multiplayer checks, language/accessibility controls, narration and addon hooks are preserved. A small Themes button opens the live palette gallery. The optional addon-credit overlay can be enabled with menu-addon-credits; it is hidden by default on this menu. Hover or keyboard focus reveals an accent underline with one short shine; it stops when settled.
 
 The client UI stays classic: **Right Shift** opens the normal Meteor/Catppuccin category windows. There is no unified hub or alternate layout selector.
 
 ## Download and install
 
-[Download v1.2.0](https://github.com/davyduao-hue/Meteor-Purple-Edition/releases/tag/v1.2.0). Use **meteor-purple-edition-1.2.0.jar**, replacing your previous Purple Edition JAR in your instance's `mods` folder.
+[Download v1.3.0](https://github.com/davyduao-hue/Meteor-Purple-Edition/releases/tag/v1.3.0). Use **meteor-purple-edition-1.3.0.jar**, replacing your previous Purple Edition JAR in your instance's `mods` folder.
 
 Requires **Minecraft Java 26.2**, **Java 25** and **Fabric Loader 0.19.3+**. Meteor 26.2-35, Catppuccin 2.4.0+mc26.2 and Fabric API 0.154.2+26.2 are already included. Remove duplicate standalone copies of those three mods.
 
@@ -16,7 +16,11 @@ Open **Purple → Purple Appearance** in the classic UI. Choose Mocha, Purple Gl
 
 Blur and window shadows are **off by default**. Glass transparency does not require blur. Optional adaptive blur suspends the blur pass at low FPS. Performance mode disables animations, blur and shadows, makes panels opaque, and refreshes HUD data twice per second instead of four times. Reduced motion removes transitions without changing the palette. No system services, registry settings, drivers, security tools or global Windows settings are changed.
 
-The menu draws seven cached logo faces and fills instead of a rotating panorama. Hover shine runs once per entry. HUD frame sampling only adds two numbers per rendered frame; string formatting, heap reads and text measurements run at the bounded HUD refresh rate. There are no HUD blur passes, polling threads or background network requests from Purple Edition.
+The menu uses six 1024×1024 views captured in Minecraft 26.2 with Iris 1.11.4, Sodium 0.9.2 and Complementary Reimagined r5.9.3. It rotates through Minecraft’s normal cubemap renderer. Shader lighting, bloom and shadows are baked into the images: **Iris, Sodium and shader packs are not required or bundled for the finished menu**. Reduced motion and performance mode freeze panorama rotation. The cubemap uses approximately 24 MiB of uncompressed GPU image storage; no world simulation or live shader pass runs behind the menu. Hover shine runs once per entry. HUD frame sampling only adds two numbers per rendered frame; string formatting, heap reads and text measurements run at the bounded HUD refresh rate. There are no HUD blur passes, polling threads or background network requests from Purple Edition.
+
+## Zenith loading screens
+
+Resource loading displays **Zenith Client** with **the client for the elite**, a dark indigo background and a lavender progress bar. Minecraft still controls reload completion, error handling and fades. World loading displays the same title and tagline above the native terrain progress.
 
 ## Zenith HUD
 
@@ -50,8 +54,8 @@ See [VALIDATION.md](VALIDATION.md) for evidence and limits. No live-server explo
 
 ## Actual screenshots
 
-![Vanilla-style Meteor menu](docs/screenshots/v1.2.0/menu-mocha.png)
+![Moonrise colosseum panorama in the real client](docs/screenshots/v1.3.0/menu.png)
 
-![Custom accent hover underline](docs/screenshots/v1.2.0/menu-custom-hover.png)
+![Zenith resource loading](docs/screenshots/v1.3.0/loading.png)
 
-![Movable Zenith HUD bars in Meteor HUD editor with optional Glazed installed](docs/screenshots/v1.2.0/zenith-hud-editor.png)
+The reproducible block builder, pinned capture setup and shader settings are in [tools/panorama-studio](tools/panorama-studio). Capture metadata and face checksums ship beside the six textures. No AI-generated artwork is used in the client.

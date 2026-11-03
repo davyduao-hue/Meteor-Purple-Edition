@@ -22,13 +22,33 @@ import java.nio.file.*;
 public class PurpleSmoke implements ClientModInitializer {
     private int ticks,step=-1;
     private String shot;
+    private boolean captureReload,overlayCaptured;
+    private int overlayTicks;
     private final Path out=Path.of("screenshots");
     public void onInitializeClient() {
         try { Files.createDirectories(out); } catch(Exception e) { throw new RuntimeException(e); }
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
     }
     private void tick(Minecraft mc) {
-        if(Appearance.get()==null || mc.gui.screen()==null || mc.gui.overlay()!=null) return;
+        if(mc.gui.overlay()!=null) {
+            if(captureReload && !overlayCaptured && ++overlayTicks==22) {
+                overlayCaptured=true;
+                Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(),image -> {
+                    try { image.writeToFile(out.resolve("zenith-loading.png")); } catch(Exception e) { throw new RuntimeException(e); } finally { image.close(); }
+                });
+            }
+            return;
+        }
+        if(Appearance.get()==null) return;
+        if(step==21 && mc.player==null) {
+            if(mc.gui.screen() instanceof net.minecraft.client.gui.screens.LevelLoadingScreen && !java.nio.file.Files.exists(out.resolve("zenith-world-loading.png"))) {
+                Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(),image -> {
+                    try { image.writeToFile(out.resolve("zenith-world-loading.png")); } catch(Exception e) { throw new RuntimeException(e); } finally { image.close(); }
+                });
+            }
+            return;
+        }
+        if(mc.gui.screen()==null && mc.player==null) return;
         if(++ticks<45) return;
         ticks=0;
         if(shot!=null) {
@@ -36,7 +56,7 @@ public class PurpleSmoke implements ClientModInitializer {
             Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(),nativeImage -> {
                 try { nativeImage.writeToFile(image); } catch(Exception e) { throw new RuntimeException(e); } finally { nativeImage.close(); }
             });
-            System.out.println("PURPLE_SMOKE captured="+shot+" screen="+mc.gui.screen().getClass().getSimpleName());
+            System.out.println("PURPLE_SMOKE captured="+shot+" screen="+(mc.gui.screen()==null ? "World":mc.gui.screen().getClass().getSimpleName()));
         }
         Appearance a=Appearance.get(); step++;
         if(step==0) {
@@ -51,7 +71,7 @@ public class PurpleSmoke implements ClientModInitializer {
                     c.getMethod("getInstance").invoke(null);
                 } catch(Exception e) { throw new RuntimeException(e); }
             }
-            a.select(Appearance.Style.Mocha); a.customMenu.set(true); a.useCustomAccent.set(false);
+            a.performance.set(false); a.reducedMotion.set(false); a.blurRadius.set(0); a.select(Appearance.Style.Mocha); a.customMenu.set(true); a.useCustomAccent.set(false);
             require(!a.glassBlurEnabled(),"no default blur");
             mc.gui.setScreen(new TitleScreen());
             require(mc.gui.screen() instanceof PurpleTitleScreen,"custom menu route");
@@ -102,7 +122,18 @@ public class PurpleSmoke implements ClientModInitializer {
             shot="addon-settings";
         } else if(step==19) {
             a.customMenu.set(false); mc.gui.setScreen(new TitleScreen()); require(mc.gui.screen().getClass()==TitleScreen.class,"vanilla fallback"); shot="vanilla-fallback";
+        } else if(step==20) {
+            a.customMenu.set(true); a.performance.set(false); a.select(Appearance.Style.Mocha);
+            mc.gui.setScreen(new TitleScreen()); captureReload=true; mc.reloadResourcePacks(); shot=null;
+        } else if(step==21 && java.nio.file.Files.exists(java.nio.file.Path.of("saves/Zenith-Colosseum/level.dat"))) {
+            require(overlayCaptured,"real branded resource-reload overlay captured");
+            mc.createWorldOpenFlows().openWorld("Zenith-Colosseum",() -> {}); shot=null;
+        } else if(step==22 && mc.player!=null) {
+            require(mc.level!=null,"real colosseum world joined");
+            mc.getSingleplayerServer().execute(() -> mc.getSingleplayerServer().getCommands().performPrefixedCommand(mc.getSingleplayerServer().createCommandSourceStack(),"setworldspawn 0 76 12"));
+            shot="zenith-world-hud";
         } else {
+            require(overlayCaptured,"real branded resource-reload overlay captured");
             shot=null;
             try { Files.writeString(out.resolve("RESULT.txt"),"PASS: native menu actions, ten classic palettes, custom accent, editable anchored HUD and toggles, performance mode, optional addon status/settings. Modules: "+Modules.get().getCount()); }
             catch(Exception e) { throw new RuntimeException(e); }

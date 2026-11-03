@@ -4,3 +4,5 @@ run/
 .idea/
 *.iml
 *.log
+
+tools/panorama-studio/captures/

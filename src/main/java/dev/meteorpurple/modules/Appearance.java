@@ -43,7 +43,7 @@ public final class Appearance extends Module {
     public final Setting<Style> style=general.add(new EnumSetting.Builder<Style>().name("theme")
         .description("Ten live, coordinated UI/menu/HUD palettes.").defaultValue(Style.Mocha).onChanged(v -> pending=true).build());
     public final Setting<Boolean> customMenu=general.add(new BoolSetting.Builder().name("custom-main-menu")
-        .description("Minecraft menu layout with a static purple Meteor backdrop and hover underlines.").defaultValue(true).build());
+        .description("Minecraft menu layout with a shader-captured moonlit colosseum panorama and hover underlines.").defaultValue(true).build());
     public final Setting<Boolean> menuCredits=general.add(new BoolSetting.Builder().name("menu-addon-credits")
         .description("Show Meteor's addon credit overlay on the custom main menu.").defaultValue(false).build());
     public final Setting<Boolean> performance=general.add(new BoolSetting.Builder().name("performance-mode")
