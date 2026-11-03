@@ -16,7 +16,7 @@ public abstract class ClientScreenMixin {
     private Screen purple$routeClientScreen(Screen screen) {
         Appearance a=Appearance.get();
         if (a==null || screen==null) return screen;
-        if (screen instanceof TitleScreen && a.customMenu.get()) return new PurpleTitleScreen();
+        if (screen.getClass()==TitleScreen.class && a.customMenu.get()) return new PurpleTitleScreen();
         return screen;
     }
 }

@@ -1,0 +1,17 @@
+plugins { id 'net.fabricmc.fabric-loom' version '1.17.11' }
+repositories {
+    mavenCentral()
+    maven { url='https://maven.meteordev.org/snapshots' }
+    maven { url='https://maven.meteordev.org/releases' }
+    maven { url='https://api.modrinth.com/maven' }
+}
+dependencies {
+    minecraft 'com.mojang:minecraft:26.2'
+    implementation 'net.fabricmc:fabric-loader:0.19.3'
+    implementation files('../../build/libs/meteor-purple-edition-1.2.0.jar')
+    compileOnly 'meteordevelopment:meteor-client:26.2-20261009.074120-35'
+    compileOnly 'maven.modrinth:3Q35hPRA:TAH6i1zw'
+    compileOnly 'net.fabricmc.fabric-api:fabric-api:0.154.2+26.2'
+}
+java { toolchain.languageVersion=JavaLanguageVersion.of(25) }
+loom { runs { client { programArgs '--username','PurpleQA','--width','1280','--height','800' } } }

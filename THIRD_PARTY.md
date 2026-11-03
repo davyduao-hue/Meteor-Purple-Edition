@@ -12,8 +12,10 @@ Meteor and Catppuccin are GPL-3.0. A copy of GPL-3.0 is provided as LICENSE_mete
 
 The build downloads these sources from immutable revision URLs and verifies their SHA-256 hashes. See build.gradle for the source archive checksums and Maven coordinates. The project release carries these source files directly, rather than relying only on links to upstream repositories.
 
-Glazed is **not included**: its All Rights Reserved license prohibits redistribution and incorporation in distributed software. It can be installed from its official release page at https://github.com/realnnpg/glazed/releases. The unified UI discovers its modules through Meteor's public module API without copying Glazed code. OpSec is also an optional separate install. Glazed's bundled ExploitPreventer has a declared conflict with OpSec 1.1.7.1; Purple Edition does not silently strip or disable either mod.
+Glazed is **not included**: its All Rights Reserved license prohibits redistribution and incorporation in distributed software. It can be installed from its official release page at https://github.com/realnnpg/glazed/releases. Classic Meteor/Catppuccin category windows display its registered modules without copying Glazed code. OpSec is also an optional separate install. Glazed bundles ExploitPreventer 1.1.0. OpSec 1.1.7.1 retains a soft conflict declaration but implements EP compatibility mode: overlapping features defer to EP. Purple checks the official compatibility flag without modifying either protection engine. The upstream Fabric warning is retained.
 
 Gradle wrapper files are Apache-2.0; see LICENSE-GRADLE and NOTICE-GRADLE in the source repository. The underlying Minecraft game is not included.
 
 The menu font is Comfortaa, Copyright 2011 The Comfortaa Project Authors, distributed under the SIL Open Font License 1.1. Its full license is included at `licenses/comfortaa-ofl.txt`. The unmodified TTF is the same font distributed by the pinned Meteor source. Official font project: https://github.com/googlefonts/comfortaa.
+
+The menu Meteor mark is a native vector rendition of the seven purple faces in the bundled Meteor logo. Its geometry and upstream GPL attribution are preserved through the pinned Meteor corresponding-source archive. It is not an official Meteor endorsement.

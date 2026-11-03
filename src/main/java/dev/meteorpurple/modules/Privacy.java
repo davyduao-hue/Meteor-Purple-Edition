@@ -20,15 +20,22 @@ public final class Privacy extends Module {
 
     @Override public WWidget getWidget(GuiTheme theme) {
         WVerticalList list = theme.verticalList();
+        var loader=FabricLoader.getInstance();
+        list.add(theme.label("Glazed: "+(loader.isModLoaded("glazed") ? "installed — native Meteor modules":"not installed")));
+        list.add(theme.label("ExploitPreventer: "+(loader.isModLoaded("exploitpreventer") ? "installed":"not installed")));
         boolean installed = FabricLoader.getInstance().isModLoaded("opsec");
         list.add(theme.label(installed ? "OpSec installed — official protection engine" : "OpSec absent — install the official 26.2 release"));
         if (!installed) return list;
-        if (FabricLoader.getInstance().isModLoaded("exploitpreventer")) {
-            list.add(theme.label("Upstream warning: ExploitPreventer conflicts with this OpSec release."));
-            list.add(theme.label("Glazed may bundle it. No protections were changed by Purple Edition."));
-        }
         try {
             Object config = config();
+            if(loader.isModLoaded("exploitpreventer")) {
+                try {
+                    boolean managed=config.getClass().getField("EXPLOIT_PREVENTER_LOADED").getBoolean(null);
+                    list.add(theme.label(managed ? "OpSec compatibility mode active — overlapping protections managed by EP":"OpSec has not enabled EP compatibility mode"));
+                } catch(NoSuchFieldException e) {
+                    list.add(theme.label("This OpSec build has no recognized EP compatibility mode. Update OpSec."));
+                }
+            }
             addStatus(list, theme, config, "shouldBlockLocalPackUrls", "Block local pack URLs");
             addStatus(list, theme, config, "isTranslationProtectionEnabled", "Key resolution protection");
             addStatus(list, theme, config, "isMeteorFix", "Meteor compatibility fix");

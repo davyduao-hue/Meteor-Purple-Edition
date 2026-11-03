@@ -16,6 +16,7 @@ public final class PurpleAddon extends MeteorAddon {
     public static final Category CATEGORY = new Category("Purple");
     public static final HudGroup HUD = new HudGroup("Purple Edition");
     private Appearance appearance;
+    private int startupTicks;
 
     @Override public void onInitialize() {
         appearance = new Appearance();
@@ -26,7 +27,7 @@ public final class PurpleAddon extends MeteorAddon {
     }
 
     // Apply only after all Meteor addons and persisted settings have initialized.
-    @EventHandler private void onTick(TickEvent.Post event) { appearance.applyPending(); }
+    @EventHandler private void onTick(TickEvent.Post event) { appearance.applyPending(); if(startupTicks<40 && ++startupTicks==40) appearance.installStarterHudOnce(); }
     @Override public void onRegisterCategories() { Modules.registerCategory(CATEGORY); }
     @Override public String getPackage() { return "dev.meteorpurple"; }
 }

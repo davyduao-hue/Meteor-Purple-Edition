@@ -3,7 +3,7 @@
   "id": "meteor-purple-edition",
   "version": "${version}",
   "name": "Meteor Purple Edition",
-  "description": "Bundled Meteor and Catppuccin with ten coordinated themes, a custom home screen, unified module/settings hub and an optimized HUD.",
+  "description": "Meteor and Catppuccin with a vanilla-style Meteor logo menu, subtle hover animations, classic UI and editable Zenith HUD bars.",
   "authors": ["Meteor Purple Edition contributors"],
   "license": "GPL-3.0-only",
   "environment": "client",
@@ -17,5 +17,5 @@
     "meteor-client": ">=26.2-0 <26.3",
     "catppuccin-addon": "*"
   },
-  "suggests": { "opsec": "*", "glazed": "*" }
+  "suggests": { "opsec": "*", "glazed": "*", "exploitpreventer": "*" }
 }
