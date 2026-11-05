@@ -8,10 +8,12 @@ repositories {
 dependencies {
     minecraft 'com.mojang:minecraft:26.2'
     implementation 'net.fabricmc:fabric-loader:0.19.3'
-    implementation files('../../build/libs/meteor-purple-edition-1.4.0.jar')
+    implementation files('../../build/libs/meteor-purple-edition-1.5.0.jar')
     compileOnly 'meteordevelopment:meteor-client:26.2-20261009.074120-35'
     compileOnly 'maven.modrinth:3Q35hPRA:TAH6i1zw'
     compileOnly 'net.fabricmc.fabric-api:fabric-api:0.154.2+26.2'
 }
 java { toolchain.languageVersion=JavaLanguageVersion.of(25) }
 loom { runs { client { programArgs '--username','PurpleQA','--width','1280','--height','800' } } }
+tasks.named('runClient') { if(project.hasProperty('polish')) jvmArgs '-Dzenith.polish=true' }
+

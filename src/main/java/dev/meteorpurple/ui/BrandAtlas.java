@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.texture.*;
 import net.minecraft.resources.Identifier;
 import java.io.IOException;
 
-/** Pre-rasterized Comfortaa typography is available even during the first font reload. */
+/** Pre-rasterized Fredoka typography is available even during the first font reload. */
 public final class BrandAtlas {
     public static final Identifier ID=Identifier.fromNamespaceAndPath("meteor-purple-edition","zenith-bootstrap-atlas");
     private static TextureManager registered;
@@ -16,7 +16,7 @@ public final class BrandAtlas {
         if(registered==manager) return;
         try(var in=BrandAtlas.class.getResourceAsStream("/assets/meteor-purple-edition/textures/ui/brand-atlas.png")) {
             if(in==null) throw new IOException("Missing Zenith type atlas");
-            manager.register(ID,new DynamicTexture(() -> "Zenith Comfortaa type",NativeImage.read(in)));
+            manager.register(ID,new DynamicTexture(() -> "Zenith Fredoka type",NativeImage.read(in)));
             registered=manager;
         } catch(IOException e) { throw new IllegalStateException("Could not load Zenith typography",e); }
     }
@@ -28,14 +28,14 @@ public final class BrandAtlas {
     }
     public static void percent(GuiGraphicsExtractor g,int value,int cx,int y,int color) {
         value=Math.max(0,Math.min(100,value)); int digits=value>=100 ? 3:value>=10 ? 2:1;
-        int left=cx-(digits+1)*9/2;
+        int left=cx-(digits*7+14)/2;
         for(int i=0;i<digits;i++) {
             int place=digits-i-1,divisor=place==2 ? 100:place==1 ? 10:1;
-            glyph(g,(value/divisor)%10,left+i*9,y,color);
+            glyph(g,(value/divisor)%10,left+i*7,y,color);
         }
-        glyph(g,10,left+digits*9,y,color);
+        glyph(g,10,left+digits*7,y,color);
     }
     private static void glyph(GuiGraphicsExtractor g,int index,int x,int y,int color) {
-        g.blit(RenderPipelines.GUI_TEXTURED,ID,x,y,index*64,320,10,13,64,80,1024,512,color);
+        g.blit(RenderPipelines.GUI_TEXTURED,ID,x,y,index*64,320,14,17,64,80,1024,512,color);
     }
 }

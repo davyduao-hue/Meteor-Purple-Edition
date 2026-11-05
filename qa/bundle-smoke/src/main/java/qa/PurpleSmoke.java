@@ -21,12 +21,13 @@ import java.nio.file.*;
 
 public class PurpleSmoke implements ClientModInitializer {
     private int ticks,step=-1;
-    private int preview=-1;
+    private int preview=-1,showcase,showTicks;
     private String shot;
     private boolean captureReload,overlayCaptured;
     private int overlayTicks;
     private final Path out=Path.of("screenshots");
     public void onInitializeClient() {
+        if(Boolean.getBoolean("zenith.polish")) { LoadingPolish.start(); return; }
         try { Files.createDirectories(out); } catch(Exception e) { throw new RuntimeException(e); }
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
     }
@@ -52,12 +53,25 @@ public class PurpleSmoke implements ClientModInitializer {
         if(mc.gui.screen()==null && mc.player==null) return;
         if(preview>=0 && preview<65) {
             if(preview==22) { Button b=find(mc,"Singleplayer"); if(b!=null) b.setFocused(true); }
-            if(preview==45) { Button b=find(mc,"Singleplayer"); if(b!=null) b.setFocused(false); }
+            if(preview==45) {
+                Button b=find(mc,"Singleplayer"); if(b!=null) b.setFocused(false);
+                float hero=mc.getWindow().getGuiScaledHeight()>=300 ? Math.max(56,(mc.getWindow().getGuiScaledHeight()-290)/2f+44):56;
+                mc.gui.screen().mouseClicked(new net.minecraft.client.input.MouseButtonEvent(mc.getWindow().getGuiScaledWidth()/2f,hero,new net.minecraft.client.input.MouseButtonInfo(0,0)),false);
+            }
             final int frame=preview++;
             try { Files.createDirectories(out.resolve("motion")); } catch(Exception e) { throw new RuntimeException(e); }
             Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(),image -> {
                 try { image.writeToFile(out.resolve("motion/frame"+String.format("%03d",frame)+".png")); } catch(Exception e) { throw new RuntimeException(e); } finally { image.close(); }
             });
+            return;
+        }
+        if(step==0 && preview>=65 && showcase<2) {
+            if(showcase==0 && showTicks==0) mc.gui.setScreen(new ThemeGalleryScreen(mc.gui.screen()));
+            if(++showTicks==35) {
+                capture(mc,showcase==0 ? "theme-gallery":"motion-settings"); showcase++; showTicks=0;
+                if(showcase==1) mc.gui.setScreen(new MotionScreen(new TitleScreen()));
+                else mc.gui.setScreen(new TitleScreen());
+            }
             return;
         }
         if(++ticks<45) return;
@@ -82,7 +96,7 @@ public class PurpleSmoke implements ClientModInitializer {
                     c.getMethod("getInstance").invoke(null);
                 } catch(Exception e) { throw new RuntimeException(e); }
             }
-            a.performance.set(false); a.reducedMotion.set(false); a.blurRadius.set(0); a.uiAnimations.set(true); a.gameAnimations.set(false); a.menuBackground.set(Appearance.Backdrop.Meteor); a.select(Appearance.Style.Mocha); a.customMenu.set(true); a.useCustomAccent.set(false);
+            a.customClientUi.set(true); a.roundedTypeface.set(true); a.motionStyle.set(Appearance.Motion.Playful); a.particles.set(true); a.performance.set(false); a.reducedMotion.set(false); a.blurRadius.set(0); a.uiAnimations.set(true); a.gameAnimations.set(false); a.menuBackground.set(Appearance.Backdrop.Meteor); a.select(Appearance.Style.Mocha); a.customMenu.set(true); a.useCustomAccent.set(false);
             require(!a.glassBlurEnabled(),"no default blur");
             require(a.menuBackground.get()==Appearance.Backdrop.Meteor,"Meteor backdrop default");
             require(!a.gameAnimations.get(),"game animations opt in");
@@ -92,6 +106,15 @@ public class PurpleSmoke implements ClientModInitializer {
             a.uiAnimations.set(true); require(a.animate(),"UI motion on");
             a.gameAnimations.set(true); a.reducedMotion.set(true); require(!a.animateGame(),"reduced motion overrides game feedback");
             a.reducedMotion.set(false); a.gameAnimations.set(false); preview=0;
+            RenderBudget.run(mc,out); ClientUiAudit.run(mc);
+            var original=mc.gui.screen(); find(mc,"Motion").onPress(null);
+            require(mc.gui.screen() instanceof MotionScreen,"quick motion screen");
+            find(mc,"Arcade").onPress(null); require(a.motionStyle.get()==Appearance.Motion.Arcade,"Arcade selection");
+            find(mc,"Performance").onPress(null); require(!a.animate(),"quick performance override");
+            find(mc,"Playful").onPress(null); require(a.animate() && !a.performance.get(),"preset restores effects");
+            find(mc,"Reduce motion").onPress(null); require(!a.animate(),"quick reduced motion override");
+            find(mc,"Gentle").onPress(null); require(a.animate(),"Gentle selection");
+            a.motionStyle.set(Appearance.Motion.Playful); mc.gui.setScreen(original);
             require(Modules.get().getCount()>100,"Meteor modules"); shot="menu-mocha";
         } else if(step==1) {
             Button single=find(mc,"Singleplayer"); require(single!=null,"vanilla singleplayer button"); single.onPress(null);
@@ -101,18 +124,24 @@ public class PurpleSmoke implements ClientModInitializer {
             mc.gui.setScreen(new TitleScreen()); Button options=find(mc,"Options...");
             if(options==null) options=find(mc,"Options\u2026");
             require(options!=null,"vanilla options button"); options.onPress(null);
-            require(mc.gui.screen() instanceof OptionsScreen,"native options action"); shot="options";
+            require(mc.gui.screen() instanceof OptionsScreen,"native options action"); require(UiScope.nativeControls(),"native options styling"); shot="options";
         } else if(step==3) {
+            Button sounds=null;
+            for(var child:mc.gui.screen().children()) if(child instanceof Button b && b.getMessage().getString().contains("Sounds")) sounds=b;
+            require(sounds!=null,"sound options button"); sounds.onPress(null); require(UiScope.nativeControls(),"native sub-options styling");
+            require(hasSlider(mc.gui.screen()),"native sliders retained");
             mc.gui.setScreen(new TitleScreen()); Button themes=find(mc,"Themes"); require(themes!=null,"theme button"); themes.onPress(null);
             require(mc.gui.screen() instanceof ThemeGalleryScreen,"gallery action");
             a.menuBackground.set(Appearance.Backdrop.Colosseum); require(a.menuBackground.get()==Appearance.Backdrop.Colosseum,"optional colosseum selection");
             mc.gui.setScreen(new TitleScreen()); shot="optional-colosseum";
         } else if(step>=4 && step<14) {
             a.menuBackground.set(Appearance.Backdrop.Meteor);
+            if(step>4) ClientUiAudit.layout(mc);
             var style=Appearance.Style.values()[step-4]; a.select(style);
-            mc.gui.setScreen(GuiThemes.get().modulesScreen());
+            meteordevelopment.meteorclient.gui.tabs.Tabs.get().getFirst().openScreen(GuiThemes.get());
             shot="classic-"+style.name().toLowerCase();
         } else if(step==14) {
+            ClientUiAudit.layout(mc);
             a.select(Appearance.Style.Mocha); a.useCustomAccent.set(true); a.accentColor.set(new meteordevelopment.meteorclient.utils.render.color.SettingColor(120,220,190));
             require(a.palette().accent.g==220,"custom accent palette");
             mc.gui.setScreen(new TitleScreen()); find(mc,"Singleplayer").setFocused(true); shot="menu-custom-hover";
@@ -153,15 +182,32 @@ public class PurpleSmoke implements ClientModInitializer {
             a.gameAnimations.set(true); require(a.animateGame(),"optional gameplay HUD motion enabled");
             mc.getSingleplayerServer().execute(() -> mc.getSingleplayerServer().getCommands().performPrefixedCommand(mc.getSingleplayerServer().createCommandSourceStack(),"setworldspawn 0 76 12"));
             shot="zenith-world-hud";
+        } else if(step==23 && mc.player!=null) {
+            mc.gui.setScreen(new net.minecraft.client.gui.screens.PauseScreen(true)); shot="game-pause";
+        } else if(step==24 && mc.player!=null) {
+            Button gameOptions=find(mc,"Options..."); if(gameOptions==null) gameOptions=find(mc,"Options\u2026");
+            require(gameOptions!=null,"native pause options button"); gameOptions.onPress(null);
+            require(mc.gui.screen() instanceof OptionsScreen,"native pause/options action"); shot="game-options";
         } else {
             require(overlayCaptured,"real branded resource-reload overlay captured");
             a.gameAnimations.set(false); require(!a.animateGame(),"game motion can be disabled");
             a.menuBackground.set(Appearance.Backdrop.Meteor); a.uiAnimations.set(true); a.performance.set(false);
             shot=null;
-            try { Files.writeString(out.resolve("RESULT.txt"),"PASS: native menu actions, ten classic palettes, custom accent, editable anchored HUD and toggles, performance mode, optional addon status/settings. Modules: "+Modules.get().getCount()); }
+            try { Files.writeString(out.resolve("RESULT.txt"),"PASS: native menu actions, quick motion presets, native sub-options/sliders, one-state rounded renderer, ten classic palettes, custom accent, editable anchored HUD and toggles, performance mode, optional addon status/settings. Modules: "+Modules.get().getCount()); }
             catch(Exception e) { throw new RuntimeException(e); }
             System.out.println("PURPLE_SMOKE PASS modules="+Modules.get().getCount()); mc.stop();
         }
+    }
+    private void capture(Minecraft mc,String name) {
+        Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(),image -> {
+            try { image.writeToFile(out.resolve(name+".png")); } catch(Exception e) { throw new RuntimeException(e); } finally { image.close(); }
+        });
+    }
+    private static boolean hasSlider(net.minecraft.client.gui.components.events.GuiEventListener listener) {
+        if(listener instanceof net.minecraft.client.gui.components.AbstractSliderButton) return true;
+        if(listener instanceof net.minecraft.client.gui.components.events.ContainerEventHandler c)
+            for(var child:c.children()) if(hasSlider(child)) return true;
+        return false;
     }
     private static Button find(Minecraft mc,String title) {
         for(var child:mc.gui.screen().children()) if(child instanceof Button b && b.getMessage().getString().equals(title)) return b;

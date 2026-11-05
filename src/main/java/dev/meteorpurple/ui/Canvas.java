@@ -15,27 +15,24 @@ public final class Canvas {
         var font=Minecraft.getInstance().font;
         g.text(font,text,x-font.width(text)/2,y,color,false);
     }
-    private static final int[][] CORNERS=new int[97][];
-    static {
-        for (int radius=0;radius<CORNERS.length;radius++) {
-            CORNERS[radius]=new int[radius];
-            for (int y=0;y<radius;y++) CORNERS[radius][y]=(int)Math.ceil(radius-Math.sqrt(radius*radius-Math.pow(radius-y-.5,2)));
-        }
+    public static void fitted(GuiGraphicsExtractor g,Component text,int measuredWidth,int cx,int y,int available,int color) {
+        float scale=Math.min(1,available/(float)Math.max(1,measuredWidth));
+        g.pose().pushMatrix(); g.pose().translate(cx,y+(1-scale)*4); g.pose().scale(scale);
+        g.text(Minecraft.getInstance().font,text,-measuredWidth/2,0,color,false); g.pose().popMatrix();
     }
     private Canvas() {}
     public static Palette palette() { return Appearance.get()==null ? Appearance.Style.Mocha.palette:Appearance.get().palette(); }
     public static void rounded(GuiGraphicsExtractor g,int x,int y,int w,int h,int radius,int color) {
+        if(w<=0 || h<=0 || (color>>>24)==0) return;
         int scale=Appearance.get()!=null && Appearance.get().performance.get() ? 1:Minecraft.getInstance().getWindow().getGuiScale();
-        g.pose().pushMatrix(); g.pose().scale(1f/scale);
+        var pose=new org.joml.Matrix3x2f(g.pose()).scale(1f/scale);
         x*=scale; y*=scale; w*=scale; h*=scale; radius*=scale;
         int r=Math.max(0,Math.min(96,Math.min(radius,Math.min(w,h)/2)));
-        g.fill(x,y+r,x+w,y+h-r,color);
-        for (int row=0;row<r;row++) {
-            int inset=CORNERS[r][row];
-            g.fill(x+inset,y+row,x+w-inset,y+row+1,color);
-            g.fill(x+inset,y+h-row-1,x+w-inset,y+h-row,color);
-        }
-        g.pose().popMatrix();
+        var clip=g.scissorStack.peek();
+        var bounds=new net.minecraft.client.gui.navigation.ScreenRectangle(x,y,w,h).transformMaxBounds(pose);
+        if(clip!=null) bounds=bounds.intersection(clip);
+        if(bounds!=null && bounds.width()>0 && bounds.height()>0)
+            g.guiRenderState.addGuiElement(new RoundedPanel(pose,x,y,w,h,r,color,clip,bounds));
     }
     public static void background(GuiGraphicsExtractor g,int w,int h) {
         Palette p=palette();

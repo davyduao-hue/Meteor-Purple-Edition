@@ -38,3 +38,13 @@ with zipfile.ZipFile(artifact) as bundle:
     atlas=bundle.read('assets/meteor-purple-edition/textures/ui/brand-atlas.png')
     assert atlas[:8]==b'\x89PNG\r\n\x1a\n' and struct.unpack('>II',atlas[16:24])==(1024,512)
     print('Verified bootstrap typography atlas.')
+    icons_root='assets/meteor-purple-edition/textures/icons/'
+    icons=json.loads(bundle.read(icons_root+'icons.json'))
+    assert len(icons['names'])==26 and len(icons['themes'])==10
+    for name,info in icons['themes'].items():
+        data=bundle.read(icons_root+name+'.png')
+        assert struct.unpack('>II',data[16:24])==(288,240)
+        assert hashlib.sha256(data).hexdigest()==info['sha256']
+    assert 'licenses/fredoka-ofl.txt' in bundle.namelist()
+    assert 'assets/meteor-purple-edition/font/fredoka.ttf' in bundle.namelist()
+    print('Verified 260 original theme glyphs in ten bounded atlases and the bundled font license.')

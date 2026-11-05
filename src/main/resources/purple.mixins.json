@@ -2,6 +2,34 @@
   "required": true,
   "package": "dev.meteorpurple.mixin",
   "compatibilityLevel": "JAVA_25",
-  "client": ["GlassBackgroundMixin", "GlassPaletteMixin", "ClientScreenMixin", "MenuButtonMixin", "MenuCreditsMixin", "MenuSplashMixin", "ColosseumPanoramaMixin", "LoadingOverlayMixin", "WorldLoadingBrandMixin"],
-  "injectors": { "defaultRequire": 1 }
+  "client": [
+    "GlassBackgroundMixin",
+    "GlassPaletteMixin",
+    "ClientScreenMixin",
+    "MenuButtonMixin",
+    "MenuSliderMixin",
+    "MenuCreditsMixin",
+    "MenuSplashMixin",
+    "ColosseumPanoramaMixin",
+    "LoadingOverlayMixin",
+    "WorldLoadingBrandMixin",
+    "ThemeIconInitMixin",
+    "ThemeIconMixin",
+    "ThemeIconRegistryMixin",
+    "ClassicWidgetFactoryMixin",
+    "ClassicCategoryLayoutMixin",
+    "ClassicWindowMixin",
+    "ClassicHeaderMixin",
+    "ClassicInputMixin",
+    "ClassicTopBarMixin",
+    "ClassicAnimationMixin",
+    "ClassicScreenToolsMixin",
+    "MenuIconMixin",
+    "UiFontStreamMixin",
+    "ClassicFontMixin",
+    "ThemeIconTintMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

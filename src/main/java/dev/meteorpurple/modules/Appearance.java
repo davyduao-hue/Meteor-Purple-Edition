@@ -17,16 +17,16 @@ import net.minecraft.nbt.CompoundTag;
 
 public final class Appearance extends Module {
     public enum Style {
-        Mocha("Catppuccin Mocha","Velvet charcoal and lavender",0x1e1e2e,0x181825,0xb4befe,0xcdd6f4,false,false),
-        Glass("Purple Glass","Soft purple, floating translucent panels",0x21162f,0x160e22,0xcba6f7,0xe9dff8,false,true),
-        Minimal("Minimal Lavender","Compact, quiet and lightweight",0x181821,0x101017,0xb9adf8,0xe6e1f5,false,false),
-        OS26("OS26 Glass","Pearl glass and lilac light",0xeff2fc,0xdde4f5,0x7964d8,0x202238,true,true),
-        Midnight("Midnight","Inky indigo and electric violet",0x111326,0x0b0d19,0x9b8dff,0xe3e7ff,false,false),
-        Rose("Rose Quartz","Warm plum and soft rose",0x281c29,0x1a121c,0xf2a9c2,0xf7e5ed,false,false),
-        Ocean("Ocean","Deep navy and glacial blue",0x101f2c,0x0a1520,0x80cee8,0xddf3fb,false,false),
-        Forest("Forest","Evergreen and mint accents",0x14231f,0x0d1815,0x94d7b2,0xe1f3e9,false,false),
-        Amoled("AMOLED Violet","True black, crisp violet",0x000000,0x000000,0xbc9aff,0xece6fa,false,false),
-        Original("Original Meteor","Meteor's original interface",0x202020,0x141414,0x913de2,0xffffff,false,false);
+        Mocha("Velvet Purple","Plum-black surfaces and luminous lilac",0x171222,0x100e1b,0xc49aff,0xf4efff,false,false),
+        Glass("Amethyst Glass","Soft translucent layers and gem icons",0x191525,0x0f0d17,0xdab8ff,0xf4edff,false,true),
+        Minimal("Quiet Lavender","Fine outlines, restrained motion, compact shapes",0x17161c,0x101014,0xbba8e8,0xf1eef9,false,false),
+        OS26("OS26 Pearl Glass","Pearl surfaces, purple glass controls and disc icons",0xf1edf8,0xe3deef,0x7952cc,0x2b213c,true,true),
+        Midnight("Midnight Neon","Angular neon details over deep indigo",0x0e1022,0x080a17,0xa69aff,0xedf0ff,false,false),
+        Rose("Rose Silk","Soft capsules, plum surfaces and rose light",0x281423,0x1b0e19,0xf1aacd,0xf7eaf3,false,false),
+        Ocean("Tidal Blue","Glacial accents, tidal icon arcs and navy",0x0d1d2b,0x08131e,0x87daf0,0xe8f8ff,false,false),
+        Forest("Mint Grove","Leaf-cut icons and calm evergreen panels",0x11221d,0x0a1612,0x9fdfc1,0xebfff4,false,false),
+        Amoled("Obsidian OLED","True black, thin violet outlines and no idle effects",0x000000,0x000000,0xc6a4ff,0xf2edff,false,false),
+        Original("Classic Meteor","Sharp graphite and saturated Meteor purple",0x1d1921,0x100e13,0xb66bff,0xf1eaf7,false,false);
         public final String title,subtitle;
         public final Palette palette;
         public final boolean glass;
@@ -36,6 +36,7 @@ public final class Appearance extends Module {
         @Override public String toString() { return title; }
     }
     public enum Backdrop { Meteor, Colosseum }
+    public enum Motion { Gentle, Playful, Arcade }
     private static Appearance instance;
     public static Appearance get() { return instance; }
     private boolean pending=true,adaptiveSuppressed;
@@ -43,6 +44,12 @@ public final class Appearance extends Module {
     private final SettingGroup general=settings.getDefaultGroup();
     public final Setting<Style> style=general.add(new EnumSetting.Builder<Style>().name("theme")
         .description("Ten live, coordinated UI/menu/HUD palettes.").defaultValue(Style.Mocha).onChanged(v -> pending=true).build());
+    public final Setting<Boolean> customClientUi=general.add(new BoolSetting.Builder().name("custom-client-ui")
+        .description("Revamped classic category windows, settings, icons and animation. Turn off for the native Meteor theme.")
+        .defaultValue(true).onChanged(v -> pending=true).build());
+    public final Setting<Boolean> roundedTypeface=general.add(new BoolSetting.Builder().name("zenith-typeface")
+        .description("Use bundled rounded Fredoka in client screens. Turn off to use Meteor's chosen font; does not change that preference.")
+        .defaultValue(true).onChanged(v -> pending=true).build());
     public final Setting<Boolean> customMenu=general.add(new BoolSetting.Builder().name("custom-main-menu")
         .description("Clean Meteor-logo menu with optional colosseum backdrop and springy interaction.").defaultValue(true).build());
     public final Setting<Backdrop> menuBackground=general.add(new EnumSetting.Builder<Backdrop>().name("menu-background")
@@ -50,6 +57,12 @@ public final class Appearance extends Module {
         .onChanged(v -> ColosseumPanorama.select(v==Backdrop.Colosseum)).build());
     public final Setting<Boolean> uiAnimations=general.add(new BoolSetting.Builder().name("ui-animations")
         .description("Springy menu buttons, floating logo and expressive loading feedback.").defaultValue(true).onChanged(v -> { pending=true; saveMotion(); }).build());
+    public final Setting<Motion> motionStyle=general.add(new EnumSetting.Builder<Motion>().name("motion-style")
+        .description("Gentle is restrained; Playful adds bounce; Arcade adds extra movement and motes.")
+        .defaultValue(Motion.Playful).onChanged(v -> saveMotion()).build());
+    public final Setting<Boolean> particles=general.add(new BoolSetting.Builder().name("ui-particles")
+        .description("Bounded ambient motes, hover sparks and loading bursts. Never spawns world entities.")
+        .defaultValue(true).onChanged(v -> saveMotion()).build());
     public final Setting<Boolean> gameAnimations=general.add(new BoolSetting.Builder().name("in-game-animations")
         .description("Optional Zenith HUD entrance/pulses and springy pause/options buttons. No camera shake or gameplay changes.")
         .defaultValue(false).onChanged(v -> saveMotion()).build());
@@ -96,9 +109,9 @@ public final class Appearance extends Module {
             if (fps>0 && fps<45) adaptiveSuppressed=true; else if (fps>=60) adaptiveSuppressed=false;
         }
         if (!pending) return;
-        Style selected=style.get(); String target=selected==Style.Original ? "Meteor":"Catppuccin";
+        Style selected=style.get(); String target=customClientUi.get() ? "Catppuccin":"Meteor";
         if (GuiThemes.get()==null || !GuiThemes.get().name.equals(target)) GuiThemes.select(target);
-        if (selected==Style.Original) {
+        if (!customClientUi.get()) {
             pending=false;
             return;
         }
@@ -109,12 +122,13 @@ public final class Appearance extends Module {
         theme.scale.set(Math.max(.75,scale.get()*(compact ? .9:1)));
         theme.windowOpacity.set(performance.get() ? 1:opacity.get()*(selected.glass ? .82:1));
         theme.backgroundOpacity.set(performance.get() ? 1:opacity.get()*(selected.glass ? .68:1));
-        theme.cornerRadius.set(compact ? 5:selected==Style.OS26 ? 18:12);
-        theme.smallCornerRadius.set(compact ? 3:selected==Style.OS26 ? 10:6);
+        theme.cornerRadius.set(ThemeDesign.of(selected).windowRadius());
+        theme.smallCornerRadius.set(ThemeDesign.of(selected).controlRadius());
         theme.windowShadow.set(!low && softShadows.get()); theme.shadowBlur.set(low || !softShadows.get() ? 0:10);
         theme.shadowSpread.set(-5); theme.shadowOffsetY.set(selected.glass ? 4:2);
         theme.guiAnimationDuration.set(low || reducedMotion.get() || !uiAnimations.get() ? 1:duration.get());
         theme.catppuccinSearchScreen.set(true); theme.snapModuleCategories.set(true);
+        theme.modulesHelpText.set(false); theme.modulesWatermark.set(false);
         pending=false;
         theme.reloadScreen();
     }
@@ -147,8 +161,8 @@ public final class Appearance extends Module {
     public boolean animate() { return uiAnimations.get() && motionAllowed(); }
     public boolean animateGame() { return gameAnimations.get() && motionAllowed(); }
     private void saveMotion() {
-        if(instance!=this || uiAnimations==null || gameAnimations==null || reducedMotion==null || performance==null) return;
-        MotionPrefs.save(uiAnimations.get(),gameAnimations.get(),reducedMotion.get(),performance.get());
+        if(instance!=this || uiAnimations==null || gameAnimations==null || reducedMotion==null || performance==null || motionStyle==null || particles==null) return;
+        MotionPrefs.save(uiAnimations.get(),gameAnimations.get(),reducedMotion.get(),performance.get(),motionStyle.get().ordinal(),particles.get());
     }
     @Override public WWidget getWidget(GuiTheme theme) {
         var list=theme.verticalList();

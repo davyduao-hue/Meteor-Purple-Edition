@@ -1,0 +1,6 @@
+200 identical 28x24 radius-7 panels, GUI scale 2
+Legacy native GUI states: 5800
+New native GUI states: 200
+Legacy extraction median ms (9 samples after 3 warmups): 156.7528
+New extraction median ms: 0.2516
+This measures panel extraction only, not GPU frame rate, whole menu performance or gameplay FPS.

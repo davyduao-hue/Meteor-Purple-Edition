@@ -22,7 +22,7 @@ public abstract class LoadingOverlayMixin {
     @Inject(method="extractRenderState",at=@At("HEAD"))
     private void zenith$begin(GuiGraphicsExtractor g,int x,int y,float delta,CallbackInfo ci) { zenith$drawn=false; }
     @Redirect(method="extractRenderState",at=@At(value="INVOKE",target="Ljava/util/function/IntSupplier;getAsInt()I"))
-    private int zenith$background(IntSupplier original) { return 0xff10131f; }
+    private int zenith$background(IntSupplier original) { return Palette.argb(Canvas.palette().mantle,255); }
     @Redirect(method="extractRenderState",at=@At(value="INVOKE",target="Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIIIIII)V"))
     private void zenith$brand(GuiGraphicsExtractor g,RenderPipeline pipeline,Identifier id,int x,int y,float u,float v,int w,int h,int rw,int rh,int tw,int th,int color) {
         if(!zenith$drawn) { LoadingBrand.draw(g,currentProgress,color>>>24,zenith$motion); zenith$drawn=true; }
@@ -32,3 +32,4 @@ public abstract class LoadingOverlayMixin {
         ci.cancel();
     }
 }
+

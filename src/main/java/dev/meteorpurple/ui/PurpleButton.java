@@ -3,7 +3,7 @@ package dev.meteorpurple.ui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 
-public final class PurpleButton extends Button {
+public class PurpleButton extends Button {
     private final Palette preview;
     private final ButtonMotion motion=new ButtonMotion();
     public PurpleButton(int x,int y,int w,int h,String title,Runnable action) { this(x,y,w,h,title,action,null); }

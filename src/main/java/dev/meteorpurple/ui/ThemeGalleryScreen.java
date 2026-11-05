@@ -11,18 +11,19 @@ public final class ThemeGalleryScreen extends Screen {
     public ThemeGalleryScreen(Screen parent) { super(Component.literal("Purple theme gallery")); this.parent=parent; }
     @Override protected void init() {
         int w=Math.min(286,(width-44)/2),left=(width-(w*2+12))/2;
-        int step=Math.max(22,Math.min(46,(height-125)/5));
-        int top=48;
+        int step=Math.max(20,Math.min(55,(height-110)/5));
+        int top=44;
         Appearance.Style[] styles=Appearance.Style.values();
         for (int i=0;i<styles.length;i++) {
             Appearance.Style style=styles[i];
-            PurpleButton card=new PurpleButton(left+(i%2)*(w+12),top+(i/2)*step,w,Math.max(20,step-7),style.title,
-                () -> Appearance.get().select(style),style.palette);
+            PurpleButton card=new ThemeCard(left+(i%2)*(w+12),top+(i/2)*step,w,Math.max(18,step-6),style,
+                () -> { Appearance.get().select(style); rebuildWidgets(); });
             card.setTooltip(net.minecraft.client.gui.components.Tooltip.create(Component.literal(style.subtitle)));
             addRenderableWidget(card);
         }
-        addRenderableWidget(new PurpleButton(width/2-134,height-60,128,22,"Meteor backdrop",() -> Appearance.get().menuBackground.set(Appearance.Backdrop.Meteor)));
-        addRenderableWidget(new PurpleButton(width/2+6,height-60,128,22,"Colosseum backdrop",() -> Appearance.get().menuBackground.set(Appearance.Backdrop.Colosseum)));
+        int bw=Math.min(128,(width-28)/2);
+        addRenderableWidget(new PurpleButton(width/2-bw-6,height-60,bw,22,"Meteor backdrop",() -> Appearance.get().menuBackground.set(Appearance.Backdrop.Meteor)));
+        addRenderableWidget(new PurpleButton(width/2+6,height-60,bw,22,"Colosseum backdrop",() -> Appearance.get().menuBackground.set(Appearance.Backdrop.Colosseum)));
         addRenderableWidget(new PurpleButton(width/2-80,height-31,160,22,"Done",this::onClose));
     }
     @Override public void extractRenderState(GuiGraphicsExtractor g,int mouseX,int mouseY,float delta) {
@@ -33,6 +34,7 @@ public final class ThemeGalleryScreen extends Screen {
     }
     @Override public void extractBackground(GuiGraphicsExtractor g,int mouseX,int mouseY,float delta) {}
     @Override public void onClose() {
+        if(parent instanceof meteordevelopment.meteorclient.gui.WidgetScreen screen) screen.invalidate();
         minecraft.gui.setScreen(parent);
     }
 }

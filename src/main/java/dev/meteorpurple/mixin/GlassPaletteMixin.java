@@ -16,7 +16,7 @@ public abstract class GlassPaletteMixin {
     @Inject(method = "getColor", at = @At("HEAD"), cancellable = true)
     private void purple$glassPalette(CatppuccinColor key, CallbackInfoReturnable<Color> cir) {
         Appearance appearance = Appearance.get();
-        if (appearance == null || appearance.style.get() == Appearance.Style.Original) return;
+        if (appearance == null || !appearance.customClientUi.get()) return;
         Palette palette = appearance.palette();
         Color color = switch (key) {
             case Base -> palette.base;

@@ -1,0 +1,75 @@
+{
+  "tile": 48,
+  "columns": 6,
+  "rows": 5,
+  "names": [
+    "arrow",
+    "bookmark_no",
+    "bookmark_yes",
+    "brush",
+    "copy",
+    "cube",
+    "edit",
+    "eye",
+    "grid",
+    "import",
+    "link",
+    "minus",
+    "mouse",
+    "movement",
+    "people",
+    "person",
+    "plus",
+    "question_mark",
+    "reset",
+    "search",
+    "setting",
+    "sword",
+    "tick",
+    "logo",
+    "globe",
+    "accessibility"
+  ],
+  "themes": {
+    "mocha": {
+      "sha256": "92a09c1a9cc10aeadeefc433aa9bb067013356a896305b9c5a6a0da548e1698e",
+      "style": 0
+    },
+    "glass": {
+      "sha256": "d25a326c019d40c0e8ec1ef195a925beecb1591b85d0473d6e4e07d712cd4ff4",
+      "style": 1
+    },
+    "minimal": {
+      "sha256": "8af30cf62daae192fef929fb1cce205e05a32466e24ad39af3979a3f1fce1c14",
+      "style": 2
+    },
+    "os26": {
+      "sha256": "84eaea5818735c79ad528e524bdf4254e0992160a98518e6941404ed4ef9a623",
+      "style": 3
+    },
+    "midnight": {
+      "sha256": "85d8fb8bc47396f72c7502f660006d585626e1a8662ca892ffbf7937cd33ba22",
+      "style": 4
+    },
+    "rose": {
+      "sha256": "35322648940b1a9a670433b28cd1181da7ef374efa6109c16cef1a3379e600c4",
+      "style": 5
+    },
+    "ocean": {
+      "sha256": "6d6d45a71b26a4732345b4606d3ac9c0641526694a7c5bd26ebbd87e657a6c0e",
+      "style": 6
+    },
+    "forest": {
+      "sha256": "b9a4f6c6de9dceb5b5e6775032e8454bff63b6239394506b6630d93971f2b073",
+      "style": 7
+    },
+    "amoled": {
+      "sha256": "bc0508f3ca1ddd877076ded4b09b6c85243f1e287c2937c7355d46d8a6604e58",
+      "style": 8
+    },
+    "original": {
+      "sha256": "09902e6359d5f99fb1245097c8a64194f1afd9cbc5fbefd0e41998128452a07f",
+      "style": 9
+    }
+  }
+}

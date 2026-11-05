@@ -5,6 +5,15 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ButtonMotionTest {
+    @Test void particlesAndClickRippleAreOneShotAndStopUnderReducedMotion() {
+        ButtonMotion m=new ButtonMotion(); long time=1_000_000_000L;
+        m.update(true,true,170,time); assertEquals(0,m.burst());
+        m.press(); m.update(true,true,170,time+16_666_667L); assertTrue(m.ripple()>=0);
+        for(int i=2;i<65;i++) m.update(true,true,170,time+i*16_666_667L);
+        assertEquals(-1,m.ripple()); assertEquals(-1,m.burst());
+        m.press(); m.update(true,false,170,time+2_000_000_000L);
+        assertEquals(-1,m.ripple()); assertEquals(0,m.pressAmount());
+    }
     @Test void hoverSettlesAndShineStopsInsteadOfLooping() {
         ButtonMotion motion=new ButtonMotion();
         long now=1_000_000_000L;

@@ -3,7 +3,7 @@
   "id": "meteor-purple-edition",
   "version": "${version}",
   "name": "Meteor Purple Edition",
-  "description": "Meteor and Catppuccin with a clean Meteor-logo menu, optional colosseum backdrop, springy UI motion, refined Zenith loading screens and optional in-game HUD feedback.",
+  "description": "Meteor and Catppuccin with a fully redesigned classic Zenith UI, ten custom icon families, animated Meteor logo, rounded typography, expressive motion and optional game UI feedback.",
   "authors": ["Meteor Purple Edition contributors"],
   "license": "GPL-3.0-only",
   "environment": "client",

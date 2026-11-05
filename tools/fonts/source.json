@@ -1,0 +1,10 @@
+{
+  "project": "Fredoka",
+  "source": "https://github.com/google/fonts/tree/a60a77e14f28abd4ef243a1b5dfc48df0cec5205/ofl/fredoka",
+  "original_sha256": "2ba02e68b152868aef9ba28e24b3648c7d457fe6f25c761f2c2c53fb61a73fc8",
+  "axes": {
+    "wght": 500,
+    "wdth": 100
+  },
+  "tool": "fonttools 4.60.1"
+}

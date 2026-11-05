@@ -7,6 +7,7 @@ public final class Spring {
     public void kick(float impulse) { velocity+=impulse; }
     public float value() { return value; }
     public float update(float target,float dt,float frequency) {
+        if(value==target && velocity==0) return value;
         dt=Math.max(0,Math.min(.1f,dt));
         int steps=Math.max(1,(int)Math.ceil(dt/.008f)); float h=dt/steps;
         for(int i=0;i<steps;i++) {
