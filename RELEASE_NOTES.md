@@ -1,4 +1,4 @@
-# Meteor Purple Edition v1.5.0 Â· Zenith UI revamp
+# Meteor Purple Edition v1.5.0 · Zenith UI revamp
 
 - Rebuilt classic category windows, module rows, settings controls and navigation. Responsive category wrapping, bounded scrollable bodies and a Search/Themes/Motion dock.
 - Ten redesigned themes, each with its own shape language and 26 original icons: 260 symbols in compact atlases. Live preview cards show actual theme components.

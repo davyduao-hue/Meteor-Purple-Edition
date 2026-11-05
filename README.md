@@ -1,4 +1,4 @@
-# Meteor Purple Edition v1.5.0 Â· Zenith
+# Meteor Purple Edition v1.5.0 · Zenith
 
 A complete redesign of the classic Meteor interface: floating category windows, crisp purple surfaces, readable rounded typography, animated controls and ten original icon families. The main menu keeps familiar Minecraft actions beneath an animated Meteor mark. Right Shift still opens category windows; there is no replacement hub.
 
@@ -46,7 +46,7 @@ Resource and world loading show **Zenith Client** / **the client for the elite**
 
 ## Motion and performance controls
 
-Open **Motion** from the menu or client dock, or **Purple â†’ Purple Appearance**:
+Open **Motion** from the menu or client dock, or **Purple → Purple Appearance**:
 
 - **Gentle**, **Playful** and **Arcade** change the strength of the feedback. Playful is the default.
 - **ui-particles** disables motes and bursts separately.

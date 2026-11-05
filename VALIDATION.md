@@ -1,4 +1,4 @@
-# v1.5.0 validation Â· 5 November 2026
+# v1.5.0 validation · 5 November 2026
 
 ## Build and package
 
@@ -10,8 +10,8 @@ The package verifier checks the official nested Meteor/Catppuccin/Fabric API ver
 
 | Runtime | Result |
 | --- | --- |
-| Standalone bundled client | PASS Â· 169 modules |
-| Bundle + official Glazed 17.2 + nested ExploitPreventer 1.1.0 + official OpSec 1.1.7.1 | PASS Â· 249 modules |
+| Standalone bundled client | PASS · 169 modules |
+| Bundle + official Glazed 17.2 + nested ExploitPreventer 1.1.0 + official OpSec 1.1.7.1 | PASS · 249 modules |
 
 Both full runs exercised native main-menu actions, quick motion presets and overrides, native options/sub-options/sliders, all ten redesigned classic themes, actual tab navigation, category bounds, custom accent, editable anchored HUD, HUD persistence/toggles, optional panorama, native menu fallback, official addon settings/status, an actual resource reload, actual saved-world entry, game HUD feedback, pause screen and the native pause/options action.
 
@@ -21,7 +21,7 @@ Screenshots under docs/screenshots/v1.5.0 are native game captures. Visual inspe
 
 ## Rendering improvement and practical limits
 
-An in-process comparison extracts 200 identical 28Ã—24, radius-7 panels at GUI scale 2. The individual-strip path submits **5,800 native GUI states**; the new rounded-panel path submits **200**: one state per surface, about **96.6% fewer**. Raw measurements are preserved in docs/screenshots/v1.5.0/render-budget.txt. This isolates panel extraction; it does not measure whole-menu GPU cost, in-world performance or a gameplay FPS multiplier.
+An in-process comparison extracts 200 identical 28×24, radius-7 panels at GUI scale 2. The individual-strip path submits **5,800 native GUI states**; the new rounded-panel path submits **200**: one state per surface, about **96.6% fewer**. Raw measurements are preserved in docs/screenshots/v1.5.0/render-budget.txt. This isolates panel extraction; it does not measure whole-menu GPU cost, in-world performance or a gameplay FPS multiplier.
 
 Merged spans preserve the former rounded-corner pixel coverage and reduce duplicate geometry. The module-row implementation also avoids copying and scanning an entire category for every row initialization. Text measurements, palettes, icon regions and geometry are cached; resting springs return immediately. Motes and sparks have fixed limits, and native loaders never wait for an animation. The optional colosseum cubemap remains unloaded on the default logo backdrop and is released on return from the panorama.
 
